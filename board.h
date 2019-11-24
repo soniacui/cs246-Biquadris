@@ -29,6 +29,7 @@ class Board:public Subject, public Observer{
 	
 	bool isGameOver();
 	void restart();
+
 	// NOTE the blind effect may be difficult to implement
 
 	void sufferPunishment(string effect); //augments tetroFactory/grid to accomodate effect
