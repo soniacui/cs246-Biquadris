@@ -23,6 +23,7 @@ class Board:public Subject, public Observer{
 	Info getInfo() const override; //creates and returns a BoardInfo
 	bool checkDropped(TetrominoInfo tetroInfo) const;  //checks to see if tetromino move signals end of turn
 	void clearLine(); //contains all end of turn effects, resets tetroFactory and currPunish to clean state, additional call to notifyObservers() for each removal
+	void levelChange(bool levelUp); //changes the level of the game
 
 	// NOTE the blind effect may be difficult to implement
 
