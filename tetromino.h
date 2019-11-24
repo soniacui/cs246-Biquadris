@@ -76,3 +76,11 @@ class TBlock:public Tetromino{
         Info getInfo() const override; //allows retrieval of type
         ~TBlock() override;
 };
+
+class StarBlock:public Tetromino{
+        char type;
+    public:
+        StarBlock(int speed, int value);
+        Info getInfo() const override; //allows retrieval of type
+        ~StarBlock() override;
+};

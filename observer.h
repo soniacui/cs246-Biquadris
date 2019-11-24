@@ -5,7 +5,7 @@ class Subject;
 
 class Observer{
     public:
-	virtual void notify(&Subject) = 0; //reference to the Subject that notified this Observer
+	virtual void notify(Subject &notifier) = 0; //reference to the Subject that notified this Observer
 	virtual ~Observer() = default; //default destructor, i.e. does nothing
 };
 
