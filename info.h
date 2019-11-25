@@ -9,17 +9,21 @@ struct Info{
 };
 
 struct BoardInfo:public Info{
-	vector<vector<char>> grid;
+	vector<vector<char>> grid; //MAY NOT BE NECESSARY
 	string punishType;
-	BoardInfo(vector<vector<char>> &grid, string punishType, string infoType); //specify that infoType is board
+    int deletedRow;
+	BoardInfo(vector<vector<char>> &grid, string punishType, int deletedRow, string infoType); //specify that infoType is board
+    ~BoardInfo() override;
 };
 
 struct TetrominoInfo:public Info{
+    vector<vector<int>> previously;
 	vector<vector<int>> absCoords;
 	char type;
 	bool isDeleted;
 	int value;
-	TetrominoInfo(vector<vector<int>> &absCoords, char type, int value, bool isDeleted = false); //generally, tetromino does not notify it has just been deleted, default false
+	TetrominoInfo(vector<vector<int>> &previously, vector<vector<int>> &absCoords, char type, int value, bool isDeleted = false); //generally, tetromino does not notify it has just been deleted, default false
+    ~TetrominoInfo() override;
 };
 
 #endif

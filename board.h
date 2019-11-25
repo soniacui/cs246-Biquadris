@@ -1,8 +1,9 @@
 #ifndef _BOARD_
 #define _BOARD_
+#include "subject.h"
+#include "observer.h"
 #include <vector>
 
-class Subject;
 class Tetromino;
 class LevelData;
 
@@ -19,6 +20,7 @@ class Board:public Subject, public Observer{
 	int difficulty;
 	int playerID;
 	int score;
+    int deletedRow;
 	LevelData tetroFactory;
     public:
 	Board(int difficulty, int playerID, Window *windowPtr, Console *consolePtr, string path = "");

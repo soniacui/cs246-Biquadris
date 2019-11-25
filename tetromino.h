@@ -9,7 +9,8 @@ class Tetromino:public Subject, public Observer{
     protected:
 	int speed;
 	int value;
-	bool isDeleted; //may not be necessary, if notify() removes elements from absCoords
+	bool isDeleted;
+    vector<vector<int>> previously; //remembers last position for grid to clear
 	vector<vector<int>> absCoords;
 	vector<vector<char>> currGrid;
     public:
