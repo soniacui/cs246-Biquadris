@@ -8,6 +8,7 @@ class Info;
 
 class Tetromino:public Subject, public Observer{
     protected:
+        char type;
 	    int speed;
 	    int value;
 	    bool isDeleted;
@@ -19,70 +20,55 @@ class Tetromino:public Subject, public Observer{
 	    void move(string direction);
 	    void rotate(string direction); //notifyObservers called upon every state change (includes move, rotate, drop, and instances of notify)
 	    void drop();
-	    notify(Subject &notifier) override; //cares only about when toDelete is not empty
+        Info *getInfo() const override;
+	    void notify(Subject &notifier) override; //cares only about when toDelete is not empty
 	    virtual ~Tetromino() = 0; //default destructor, also make Tetromino abstract
 };
 
 class IBlock:public Tetromino{
-	    char type;
     public:
-	    IBlock(int speed, int value);
-	    Info *getInfo() const override; //allows retrieval of type
+        IBlock(int speed, int value, char type = 'I');
 	    ~IBlock() override;
 };
 
 class JBlock:public Tetromino{
-        char type;
     public:
-        JBlock(int speed, int value);
-        Info *getInfo() const override; //allows retrieval of type
+        JBlock(int speed, int value, char type = 'J');
         ~JBlock() override;
 };
 
 class LBlock:public Tetromino{
-        char type;
     public:
-        LBlock(int speed, int value);
-        Info *getInfo() const override; //allows retrieval of type
+        LBlock(int speed, int value, char type = 'L');
         ~LBlock() override;
 };
 
 class OBlock:public Tetromino{
-        char type;
     public:
-        OBlock(int speed, int value);
-        Info *getInfo() const override; //allows retrieval of type
+        OBlock(int speed, int value, char type = 'O');
         ~OBlock() override;
 };
 
 class SBlock:public Tetromino{
-        char type;
     public:
-        SBlock(int speed, int value);
-        Info *getInfo() const override; //allows retrieval of type
+        SBlock(int speed, int value, char type = 'S');
         ~SBlock() override;
 };
 
 class ZBlock:public Tetromino{
-        char type;
     public:
-        ZBlock(int speed, int value);
-        Info *getInfo() const override; //allows retrieval of type
+        ZBlock(int speed, int value, char type = 'Z');
         ~ZBlock() override;
 };
 
 class TBlock:public Tetromino{
-        char type;
     public:
-        TBlock(int speed, int value);
-        Info *getInfo() const override; //allows retrieval of type
+        TBlock(int speed, int value, char type = 'T');
         ~TBlock() override;
 };
 
 class StarBlock:public Tetromino{
-        char type;
     public:
-        StarBlock(int speed, int value);
-        Info *getInfo() const override; //allows retrieval of type
+        StarBlock(int speed, int value, char type = '*');
         ~StarBlock() override;
 };

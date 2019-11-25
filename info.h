@@ -22,7 +22,7 @@ struct TetrominoInfo:public Info{
 	char type;
 	bool isDeleted;
 	int value;
-	TetrominoInfo(vector<vector<int>> &previously, vector<vector<int>> &absCoords, char type, int value, bool isDeleted = false); //generally, tetromino does not notify it has just been deleted, default false
+	TetrominoInfo(vector<vector<int>> &previously, vector<vector<int>> &absCoords, char type, int value, bool isDeleted);
     ~TetrominoInfo() override;
 };
 
