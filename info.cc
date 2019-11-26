@@ -3,6 +3,7 @@
 
 using namespace std;
 
+Info::Info(string infoType) : infoType{ infoType } {}
 Info::~Info() {}
 
 BoardInfo::BoardInfo(vector<vector<char>> &grid, string punishType, int deletedRow, string infoType): 

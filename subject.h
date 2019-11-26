@@ -1,12 +1,13 @@
 #ifndef _SUBJECT_
 #define _SUBJECT_
 #include <vector>
+#include <memory>
 
 class Observer;
 class Info;
 
 class Subject{
-	std::vector<Observer*> observers;
+	std::vector<unique_ptr<Observer>> observers;
     public:
 	void attach(Observer *observer);
 	void notifyObservers() const;
