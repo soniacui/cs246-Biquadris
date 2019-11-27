@@ -20,9 +20,9 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
 }
 
 void Board::generateTetromino() {
-    Tetromino *tempTetro = tetroFactory.generateTetromino();
-    currTetro = make_unique<Tetromino>(*tempTetro); //set as current tetromino
-    observers.emplace_back(currTetro); //add tetromino as an observer
+    currTetro = tetroFactory.generateTetromino();
+    unique_ptr<Tetromino> ownedPtr { *currTetro }; //make unique pointer to give to observers
+    observers.emplace_back(ownedPtr); //add tetromino as an observer
 }
 
 bool Board::checkDropped(TetrominoInfo tetroInfo) const {
@@ -58,9 +58,14 @@ void Board::clearLine() {
                     grid[y] = grid[y + 1];
             }
             linesCleared++;
+            if (linesCleared != 0 && (linesCleared / 2) == 0) { //every 2 lines cleared, choose effect for opponent
+                choosePunishment();
+            }
             sinceLastClear = 0; //reset counter for moves since last clear
             notifyObservers(); //notify to tetrominoes in case they might award extra points for removing completely
                                //notify to display to update grid as well
+                               //notify opponent to suffer punishment if applicable
+            currPunish = ""; //reset intent to punish
         }
     }
     score += difficulty + (linesCleared * linesCleared); //score increased for clearing lines
@@ -69,11 +74,10 @@ void Board::clearLine() {
     if (sinceLastClear == 5) {
         sinceLastClear = 0;
         if (difficulty == 4)
-            sufferPunishment("force*");
+            sufferPunishment("force*"); //if it is level 4 and no lines cleared in 5 turns, suffer 1x1 block
     }
     isBlind = false; //reset blindness, if blind
-    currPunish = ""; //reset intent to punish
-    generateTetromino(); //make a new tetromino for next step
+    generateTetromino(); //make a new tetromino for next step, clears force effect and heavy effect
 }
 
 void Board::toggleRandom(string newPath) {
@@ -93,53 +97,73 @@ void Board::performAction(string action) {
 }
 
 void Board::choosePunishment() {
-
+    //somehow get input from user to decide on punishment
+    if () //blind case
+        currPunish = "blind";
+    else if () //heavy case
+        currPunish = "heavy";
+    else if () { //force case
+        if () //I force
+            currPunish = "forceI";
+        else if () //J force
+            currPunish = "forceJ";
+        else if () //L force
+            currPunish = "forceL";
+        else if () //O force
+            currPunish = "forceO";
+        else if () //S force
+            currPunish = "forceS";
+        else if () //Z force
+            currPunish = "forceZ";
+        else if () //T force
+            currPunish = "forceT";
+    }
 }
 
 void Board::sufferPunishment(string effect) {
     if (effect == "blind")
         isBlind = true;
     else if (effect == "forceI") {
-        Tetromino *forcedBlock = tetroFactory.forceGenerate("I"); //make a specific tetro
-        currTetro = make_unique<Tetromino>(*forcedBlock); //force it to be current
+        currTetro = tetroFactory.forceGenerate("I"); //make a specific tetro as current
+        unique_ptr<Tetromino> forcedPtr { *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(currTetro); //replace with new current
+        observers.emplace_back(forcedPtr); //replace with new current
     }
     else if (effect == "forceJ") {
-        Tetromino *forcedBlock = tetroFactory.forceGenerate("J"); //make a specific tetro
-        currTetro = make_unique<Tetromino>(*forcedBlock); //force it to be current
+        currTetro = tetroFactory.forceGenerate("J"); //make a specific tetro as current
+        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(currTetro); //replace with new current
+        observers.emplace_back(forcedPtr); //replace with new current
     }
     else if (effect == "forceL") {
-        Tetromino *forcedBlock = tetroFactory.forceGenerate("L"); //make a specific tetro
-        currTetro = make_unique<Tetromino>(*forcedBlock); //force it to be current
+        currTetro = tetroFactory.forceGenerate("L"); //make a specific tetro as current
+        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(currTetro); //replace with new current
+        observers.emplace_back(forcedPtr); //replace with new current
     }
     else if (effect == "forceO") {
-        Tetromino *forcedBlock = tetroFactory.forceGenerate("O"); //make a specific tetro
-        currTetro = make_unique<Tetromino>(*forcedBlock); //force it to be current
+        currTetro = tetroFactory.forceGenerate("O"); //make a specific tetro as current
+        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(currTetro); //replace with new current
+        observers.emplace_back(forcedPtr); //replace with new current
     }
     else if (effect == "forceS") {
-        Tetromino *forcedBlock = tetroFactory.forceGenerate("S"); //make a specific tetro
-        currTetro = make_unique<Tetromino>(*forcedBlock); //force it to be current
+        currTetro = tetroFactory.forceGenerate("S"); //make a specific tetro as current
+        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(currTetro); //replace with new current
+        observers.emplace_back(forcedPtr); //replace with new current
     }
     else if (effect == "forceZ") {
-        Tetromino *forcedBlock = tetroFactory.forceGenerate("Z"); //make a specific tetro
-        currTetro = make_unique<Tetromino>(*forcedBlock); //force it to be current
+        currTetro = tetroFactory.forceGenerate("Z"); //make a specific tetro as current
+        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(currTetro); //replace with new current
+        observers.emplace_back(forcedPtr); //replace with new current
     }
     else if (effect == "forceT") {
-        Tetromino *forcedBlock = tetroFactory.forceGenerate("T"); //make a specific tetro
-        currTetro = make_unique<Tetromino>(*forcedBlock); //force it to be current
+        currTetro = tetroFactory.forceGenerate("T"); //make a specific tetro as current
+        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(currTetro); //replace with new current
+        observers.emplace_back(forcedPtr); //replace with new current
     }
     else if (effect == "force*") {
         //think on it some more may need separate vector of tetromino pointers after all (but doesnt own)

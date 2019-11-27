@@ -13,7 +13,7 @@ class Board:public Subject, public Observer {
 	    static int highScore = 0; //default set highscore to 0
         vector<vector<char>> grid;
     	string currPunish;
-        unique_ptr<Tetromino> currTetro;
+        Tetromino *currTetro;
         bool isBlind;
 	    int sinceLastClear;
 	    int difficulty;
