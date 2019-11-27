@@ -6,7 +6,7 @@
 
 using namespace std;
 
-LevelData::LevelData(int difficulty, string path = "", int seed = -1) : level{difficulty}, path{path} seed{seed} {
+LevelData::LevelData(int difficulty, string path = "", int seed = -1) : level{difficulty}, path{path}, seed{seed} {
 	vector<string> seq;
 	string s;
 	if (path != "") {             //load input seq  // ****** this requires that a new LevelData object is created every time the user calls norandom xxx
