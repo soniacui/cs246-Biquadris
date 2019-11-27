@@ -8,14 +8,13 @@ class Tetromino;
 class LevelData;
 
 class Board:public Subject, public Observer {
-	    static int highScore;
-	    vector<vector<char>> grid;
-	    vector<Tetromino*> tetrominoes;
-	    Window *windowPtr;
-	    Console *consolePtr;
-    	vector<vector<int>> toDelete;
+        const int HEIGHT = 15;
+        const int WIDTH = 11;
+	    static int highScore = 0; //default set highscore to 0
+        vector<vector<char>> grid;
     	string currPunish;
-	    string path;
+        unique_ptr<Tetromino> currTetro;
+        bool isBlind;
 	    int sinceLastClear;
 	    int difficulty;
 	    int playerID;
@@ -23,21 +22,20 @@ class Board:public Subject, public Observer {
         int deletedRow;
 	    LevelData tetroFactory;
     public:
-	    Board(int difficulty, int playerID, Window *windowPtr, Console *consolePtr, string path = "");
+	    Board(int difficulty, int playerID, Observer *display, string path = "", int seed = -1);
 	    void notify(Subject &notifier) override; //once notified, react as appropriate based on caller, would always call getInfo(), relay state change with notifyObservers()
 	    Info *getInfo() const override; //creates and returns a BoardInfo pointer
 	    bool checkDropped(TetrominoInfo tetroInfo) const;  //checks to see if tetromino move signals end of turn
 	    void clearLine(); //contains all end of turn effects, resets tetroFactory and currPunish to clean state, additional call to notifyObservers() for each removal
-	
+        void toggleRandom(string newPath = "");
 	    bool isGameOver();
 	    void restart();
-
+        void performAction(string action);
 	// NOTE the blind effect may be difficult to implement
 
 	    void sufferPunishment(string effect); //augments tetroFactory/grid to accomodate effect
 	    void choosePunishment(); //prompt user to choose effect for opponent
-	    Tetromino *generateTetromino(); //create next tetronimo to be dropped, add to tetrominoes
-	    ~Board();
+	    void generateTetromino(); //create next tetronimo to be dropped, add to tetrominoes
 };
 
 #endif
