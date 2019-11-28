@@ -14,6 +14,7 @@ class Board:public Subject, public Observer {
         vector<vector<char>> grid;
     	string currPunish;
         Tetromino *currTetro;
+        vector<Tetromino *> tetrominoes;
         bool isBlind;
 	    int sinceLastClear;
 	    int difficulty;

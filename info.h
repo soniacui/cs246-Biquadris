@@ -9,7 +9,7 @@ struct Info{
 };
 
 struct BoardInfo:public Info{
-	vector<vector<char>> grid; //MAY NOT BE NECESSARY
+	vector<vector<char>> grid;
 	string punishType;
     int deletedRow;
 	BoardInfo(vector<vector<char>> &grid, string punishType, int deletedRow, string infoType); //specify that infoType is board

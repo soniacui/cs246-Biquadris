@@ -21,6 +21,7 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
 
 void Board::generateTetromino() {
     currTetro = tetroFactory.generateTetromino();
+    tetrominoes.emplace_back(currTetro); //save a pointer to all tetrominoes generated in tetrominoes
     unique_ptr<Tetromino> ownedPtr { *currTetro }; //make unique pointer to give to observers
     observers.emplace_back(ownedPtr); //add tetromino as an observer
 }
@@ -92,8 +93,16 @@ void Board::restart() {
 
 }
 
-void Board::performAction(string action) {
-
+void Board::performAction(string action) { //handles input as a distinct unique string, calls action on current block
+    if (action == "left" || action == "right" || action == "down") {
+        currTetro->move(action);
+    }
+    else if (action == "clockwise" || action == "counterclockwise") {
+        currTetro->rotate(action);
+    }
+    else {
+        currTetro->drop();
+    }
 }
 
 void Board::choosePunishment() {
@@ -126,47 +135,69 @@ void Board::sufferPunishment(string effect) {
     else if (effect == "forceI") {
         currTetro = tetroFactory.forceGenerate("I"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr { *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(forcedPtr); //replace with new current
+        observers.pop_back(); //delete previous current in observers and tetrominoes
+        tetrominoes.pop_back();
+        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "forceJ") {
         currTetro = tetroFactory.forceGenerate("J"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(forcedPtr); //replace with new current
+        observers.pop_back(); //delete previous current in observers and tetrominoes
+        tetrominoes.pop_back();
+        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "forceL") {
         currTetro = tetroFactory.forceGenerate("L"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(forcedPtr); //replace with new current
+        observers.pop_back(); //delete previous current in observers and tetrominoes
+        tetrominoes.pop_back();
+        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "forceO") {
         currTetro = tetroFactory.forceGenerate("O"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(forcedPtr); //replace with new current
+        observers.pop_back(); //delete previous current in observers and tetrominoes
+        tetrominoes.pop_back();
+        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "forceS") {
         currTetro = tetroFactory.forceGenerate("S"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(forcedPtr); //replace with new current
+        observers.pop_back(); //delete previous current in observers and tetrominoes
+        tetrominoes.pop_back();
+        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "forceZ") {
         currTetro = tetroFactory.forceGenerate("Z"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(forcedPtr); //replace with new current
+        observers.pop_back(); //delete previous current in observers and tetrominoes
+        tetrominoes.pop_back();
+        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "forceT") {
         currTetro = tetroFactory.forceGenerate("T"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers
-        observers.emplace_back(forcedPtr); //replace with new current
+        observers.pop_back(); //delete previous current in observers and tetrominoes
+        tetrominoes.pop_back();
+        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "force*") {
-        //think on it some more may need separate vector of tetromino pointers after all (but doesnt own)
+        //currTetro does not change, this is a strict add-on
+
+        Tetromino *specialTetro = tetroFactory.forceGenerate("*"); //make a specific tetro *
+        unique_ptr<Tetromino> starPtr{ *specialTetro }; //make it a unique ptr
+
+        //nothing is popped off since this is a strict addition
+
+        observers.emplace_back(starPtr); //add starTetromino to observers (award potential points), not added to tetrominoes since it cannot be forced
+        starPtr->drop(); //this immediately drops the starBlock
     }
     else if (effect == "heavy")
         currTetro->increaseSpeed(2);
