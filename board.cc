@@ -208,8 +208,9 @@ void Board::sufferPunishment(string effect) {
 void Board::notify(Subject &notifier) {
     Info *info = notifier.getInfo(); //get relevant information from caller
     if (info->infoType == "tetromino") { //if caller is a tetromino
-        if (info->isDeleted) { //case for tetromino has been removed from board
-            score += (info->score + 1) * (info->score + 1); //add points
+        TetrominoInfo *castedInfo = static_cast<TetrominoInfo *>(info);
+        if (castedInfo->isDeleted) { //case for tetromino has been removed from board
+            score += (castedInfo->value + 1) * (castedInfo->value + 1); //add points
             deletedRow = -1; //reset deleted row to default
             if (score > Board.highScore) //change static highscore if my score is greater
                 Board.highScore = score;
@@ -224,7 +225,7 @@ void Board::notify(Subject &notifier) {
         }
     }
     else { //if caller is opponent board, only case is to suffer effect
-        string effect = info->punishType;
+        string effect = static_cast<BoardInfo *>(info)->punishType;
         sufferPunishment(effect);
     }
     notifyObservers(); //relay message to observers, namely the displays
