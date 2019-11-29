@@ -27,15 +27,20 @@ void Board::generateTetromino() {
 }
 
 bool Board::checkDropped(TetrominoInfo tetroInfo) const {
-    for (int i = 0; i < tetroInfo.absCoords.size(); i++) {
-        if (grid[tetroInfo.absCoords[i][1] - 1][tetroInfo.absCoords[i][0]] != ' ') { //check if below each pixel of tetromino is not a free space
-            for (int j = 0; j < tetroInfo.absCoords.size(); i++) {
-                if ((tetroInfo.absCoords[j][0] == tetroInfo.absCoords[i][0]) &&
-                    (tetroInfo.absCoords[j][1] == tetroInfo.absCoords[i][1] - 1))
-                    continue; //continue when the not-free space in question is part of itself
+    if (tetroInfo.isDropped)
+        return true;
+    if (tetroInfo.isHeavy) {
+        for (int i = 0; i < tetroInfo.absCoords.size(); i++) {
+            if (grid[tetroInfo.absCoords[i][1] - 1][tetroInfo.absCoords[i][0]] != ' ') { //check if below each pixel of tetromino is not a free space
+                for (int j = 0; j < tetroInfo.absCoords.size(); i++) {
+                    if ((tetroInfo.absCoords[j][0] == tetroInfo.absCoords[i][0]) &&
+                        (tetroInfo.absCoords[j][1] == tetroInfo.absCoords[i][1] - 1))
+                        continue; //continue when the not-free space in question is part of itself
+                }
+                return true //since there is no free space under a pixel of the tetromino, and it isn't itself, it has dropped
             }
-            return true //since there is no free space under a pixel of the tetromino, and it isn't itself, it has dropped
         }
+        return false;
     }
     return false;
 }
@@ -75,7 +80,7 @@ void Board::clearLine() {
     if (sinceLastClear == 5) {
         sinceLastClear = 0;
         if (difficulty == 4)
-            sufferPunishment("force*"); //if it is level 4 and no lines cleared in 5 turns, suffer 1x1 block
+            sufferPunishment("*"); //if it is level 4 and no lines cleared in 5 turns, suffer 1x1 block
     }
     isBlind = false; //reset blindness, if blind
     generateTetromino(); //make a new tetromino for next step, clears force effect and heavy effect
@@ -93,15 +98,44 @@ void Board::restart() {
 
 }
 
-void Board::performAction(string action) { //handles input as a distinct unique string, calls action on current block
+void Board::performAction(string action, string path) { //handles input as a distinct unique string, calls action on current block
     if (action == "left" || action == "right" || action == "down") {
         currTetro->move(action);
     }
     else if (action == "clockwise" || action == "counterclockwise") {
         currTetro->rotate(action);
     }
-    else {
+    else if (action == "drop") {
         currTetro->drop();
+    }
+    else if (action == "levelup") {
+        if (difficulty != 4) {
+            difficulty++;
+            tetroFactory = LevelData(difficulty); //make new factory for blocks
+        }
+    }
+    else if (action == "leveldown") {
+        if (difficulty != 0) {
+            difficulty--;
+            tetroFactory = LevelData(difficulty); //make new factory for blocks
+        }
+    }
+    else if (action == "random") {
+        if (difficulty == 3 || difficulty == 4) {
+            tetroFactory = LevelData(difficulty); //remake factory guarenteed random
+        }
+    }
+    else if (action == "restart") {
+        restart();
+    }
+    else if (action == "norandom") {
+        if (difficulty == 3 || difficulty == 4) {
+            tetroFactory = LevelData(difficulty, path); //remake factory with path to sequence
+        }
+    }
+    else { //the remaining command will be to force own block
+        sufferPunishment(action);
+        notifyObservers();
     }
 }
 
@@ -113,26 +147,26 @@ void Board::choosePunishment() {
         currPunish = "heavy";
     else if () { //force case
         if () //I force
-            currPunish = "forceI";
+            currPunish = "I";
         else if () //J force
-            currPunish = "forceJ";
+            currPunish = "J";
         else if () //L force
-            currPunish = "forceL";
+            currPunish = "L";
         else if () //O force
-            currPunish = "forceO";
+            currPunish = "O";
         else if () //S force
-            currPunish = "forceS";
+            currPunish = "S";
         else if () //Z force
-            currPunish = "forceZ";
+            currPunish = "Z";
         else if () //T force
-            currPunish = "forceT";
+            currPunish = "T";
     }
 }
 
 void Board::sufferPunishment(string effect) {
     if (effect == "blind")
         isBlind = true;
-    else if (effect == "forceI") {
+    else if (effect == "I") {
         currTetro = tetroFactory.forceGenerate("I"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr { *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -140,7 +174,7 @@ void Board::sufferPunishment(string effect) {
         observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
-    else if (effect == "forceJ") {
+    else if (effect == "J") {
         currTetro = tetroFactory.forceGenerate("J"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -148,7 +182,7 @@ void Board::sufferPunishment(string effect) {
         observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
-    else if (effect == "forceL") {
+    else if (effect == "L") {
         currTetro = tetroFactory.forceGenerate("L"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -156,7 +190,7 @@ void Board::sufferPunishment(string effect) {
         observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
-    else if (effect == "forceO") {
+    else if (effect == "O") {
         currTetro = tetroFactory.forceGenerate("O"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -164,7 +198,7 @@ void Board::sufferPunishment(string effect) {
         observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
-    else if (effect == "forceS") {
+    else if (effect == "S") {
         currTetro = tetroFactory.forceGenerate("S"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -172,7 +206,7 @@ void Board::sufferPunishment(string effect) {
         observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
-    else if (effect == "forceZ") {
+    else if (effect == "Z") {
         currTetro = tetroFactory.forceGenerate("Z"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -180,7 +214,7 @@ void Board::sufferPunishment(string effect) {
         observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
-    else if (effect == "forceT") {
+    else if (effect == "T") {
         currTetro = tetroFactory.forceGenerate("T"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -188,7 +222,7 @@ void Board::sufferPunishment(string effect) {
         observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
-    else if (effect == "force*") {
+    else if (effect == "*") {
         //currTetro does not change, this is a strict add-on
 
         Tetromino *specialTetro = tetroFactory.forceGenerate("*"); //make a specific tetro *

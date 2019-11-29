@@ -21,8 +21,10 @@ struct TetrominoInfo:public Info{
 	vector<vector<int>> absCoords;
 	char type;
 	bool isDeleted;
+    bool isDropped;
+    bool isHeavy;
 	int value;
-	TetrominoInfo(vector<vector<int>> &previously, vector<vector<int>> &absCoords, char type, int value, bool isDeleted);
+	TetrominoInfo(vector<vector<int>> &previously, vector<vector<int>> &absCoords, char type, int value, bool isDeleted, bool isDropped);
     ~TetrominoInfo() override;
 };
 

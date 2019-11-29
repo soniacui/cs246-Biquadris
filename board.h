@@ -31,9 +31,7 @@ class Board:public Subject, public Observer {
         void toggleRandom(string newPath = "");
 	    bool isGameOver();
 	    void restart();
-        void performAction(string action);
-	// NOTE the blind effect may be difficult to implement
-
+        void performAction(string action, string path = "");
 	    void sufferPunishment(string effect); //augments tetroFactory/grid to accomodate effect
 	    void choosePunishment(); //prompt user to choose effect for opponent
 	    void generateTetromino(); //create next tetronimo to be dropped, add to tetrominoes

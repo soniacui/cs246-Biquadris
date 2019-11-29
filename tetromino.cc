@@ -29,6 +29,9 @@ void Tetromino::notify(Subject &notifier) {
 }
 
 Info *Tetromino::getInfo() const {
-    unique_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, isDeleted) };
+    bool heavy = false;
+    if (speed > 0)
+        heavy = true;
+    unique_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, isDeleted, isDropped, heavy) };
     return tInfo;
 }

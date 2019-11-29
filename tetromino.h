@@ -12,6 +12,7 @@ class Tetromino:public Subject, public Observer{
 	    int speed;
 	    int value;
 	    bool isDeleted;
+        bool isDropped;
         vector<vector<int>> previously; //remembers last position for grid to clear
 	    vector<vector<int>> absCoords;
 	    vector<vector<char>> currGrid;
