@@ -90,8 +90,12 @@ void Board::toggleRandom(string newPath) {
     tetroFactory = LevelData(difficulty, newPath); //make new factory with requested randomness
 }
 
-bool Board::isGameOver() {
-
+bool Board::isGameOver(TetrominoInfo newest) {
+    for (int i = 0; i < newest.absCoords.size(); i++) {
+        if (grid[newest.absCoords[i][1][newest.absCoords[i][0]] != ' ']) //if any spots of the new block overlap with an existing one, GG
+            return true;
+    }
+    return false;
 }
 
 void Board::restart() {
@@ -250,12 +254,19 @@ void Board::notify(Subject &notifier) {
                 Board.highScore = score;
         }
         else { //handling tetromino representation on internal grid
-            for (int i = 0; i < info->absCoords.size(); i++) {
-                grid[info->previously[i][1]][info->previously[i][0]] = ' '; //fill old location
-                grid[info->absCoords[i][1]][info->absCoords[i][0]] = info->type; //new location
+            if (castedInfo->previously.size() == 0) { //newly instantiated
+                if (isGameOver(*castedInfo)) {
+                    // do something when game is over
+                }
             }
-            if (checkDropped(*info)) //check if the tetromino has dropped to the bottom
-                clearLine(); //complete end of turn actions, add points clear lines etc.
+            else { //a move done to an existing nondropped tetromino
+                for (int i = 0; i < castedInfo->absCoords.size(); i++) {
+                    grid[castedInfo->previously[i][1]][castedInfo->previously[i][0]] = ' '; //fill old location
+                    grid[castedInfo->absCoords[i][1]][castedInfo->absCoords[i][0]] = castedInfo->type; //new location
+                }
+                if (checkDropped(*castedInfo)) //check if the tetromino has dropped to the bottom
+                    clearLine(); //complete end of turn actions, add points clear lines etc.
+            }
         }
     }
     else { //if caller is opponent board, only case is to suffer effect
