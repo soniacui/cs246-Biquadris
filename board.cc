@@ -126,7 +126,7 @@ void Board::performAction(string action, string path) { //handles input as a dis
         }
     }
     else if (action == "restart") {
-        restart();
+        restart(); //this may not be necessary in performAction, as main can call it directly (affects both boards)
     }
     else if (action == "norandom") {
         if (difficulty == 3 || difficulty == 4) {
