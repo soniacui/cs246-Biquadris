@@ -14,10 +14,11 @@ struct BoardInfo:public Info{
     int deletedRow;
     int difficulty;
     int score;
+    Tetromino *nextTetro;
     bool isTurn;
     bool menu;
     bool hasLost;
-	BoardInfo(vector<vector<char>> &grid, string punishType, int deletedRow, bool isTurn, bool menu, bool hasLost, string infoType); //specify that infoType is board
+	BoardInfo(vector<vector<char>> &grid, string punishType, int deletedRow, Tetromino *nextTetro, bool isTurn, bool menu, bool hasLost, string infoType); //specify that infoType is board
     ~BoardInfo() override;
 };
 

@@ -3,6 +3,7 @@
 #include "subject.h"
 #include "observer.h"
 #include <vector>
+#include <memory>
 
 class Tetromino;
 class LevelData;
@@ -14,6 +15,7 @@ class Board:public Subject, public Observer {
         vector<vector<char>> grid;
     	string currPunish;
         Tetromino *currTetro;
+        unique_ptr<Tetromino> nextTetro;
         vector<Tetromino *> tetrominoes;
         bool isBlind;
         bool isTurn;

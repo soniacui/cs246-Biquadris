@@ -26,10 +26,19 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
 }
 
 void Board::generateTetromino() {
-    currTetro = tetroFactory.generateTetromino();
-    tetrominoes.emplace_back(currTetro); //save a pointer to all tetrominoes generated in tetrominoes
-    unique_ptr<Tetromino> ownedPtr { *currTetro }; //make unique pointer to give to observers
-    observers.emplace_back(ownedPtr); //add tetromino as an observer
+    if (nextTetro.get() == nullptr) {
+        currTetro = tetroFactory.generateTetromino();
+        tetrominoes.emplace_back(currTetro); //save a pointer to all tetrominoes generated in tetrominoes
+        unique_ptr<Tetromino> ownedPtr{ *currTetro }; //make unique pointer to give to observers
+        observers.emplace_back(ownedPtr); //add tetromino as an observer
+    }
+    else {
+        currTetro = nextTetro.get(); //replace currTetro with nextTetro
+        tetrominoes.emplace_back(nextTetro.get()); //put the next tetromino onto list of tetrominoes ptrs
+        observers.emplace_back(nextTetro); //put next tetromino as an observer
+    }
+
+    nextTetro = make_unique<Tetromino>(tetroFactory.generateTetromino()); //make new next tetromino
 }
 
 bool Board::checkDropped(TetrominoInfo tetroInfo) const {
@@ -317,6 +326,6 @@ Info *Board::getInfo() const {
             }
         }
     }
-    unique_ptr<BoardInfo> bInfo { new BoardInfo(displayGrid, currPunish, deletedRow, isTurn, menu, hasLost, "board") };
+    unique_ptr<BoardInfo> bInfo { new BoardInfo(displayGrid, currPunish, deletedRow, nextTetro.get(), isTurn, menu, hasLost, "board") };
     return bInfo;
 }

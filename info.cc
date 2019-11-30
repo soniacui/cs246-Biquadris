@@ -1,12 +1,14 @@
 #include "info.h"
 #include <vector>
 
+class Tetromino;
+
 using namespace std;
 
 Info::Info(string infoType) : infoType{ infoType } {}
 Info::~Info() {}
 
-BoardInfo::BoardInfo(vector<vector<char>> &grid, string punishType, int deletedRow, bool isTurn, bool menu, bool hasLost, string infoType): 
+BoardInfo::BoardInfo(vector<vector<char>> &grid, string punishType, int deletedRow, Tetromino *nextTetro, bool isTurn, bool menu, bool hasLost, string infoType): 
     Info(infoType), grid{ grid }, deletedRow{ deletedRow }, isTurn{ isTurn }, menu{ menu }, hasLost{ hasLost }, punishType{ punishType } {}
 BoardInfo::~BoardInfo() {}
 
