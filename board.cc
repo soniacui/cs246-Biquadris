@@ -326,6 +326,6 @@ Info *Board::getInfo() const {
             }
         }
     }
-    unique_ptr<BoardInfo> bInfo { new BoardInfo(displayGrid, currPunish, deletedRow, nextTetro.get(), isTurn, menu, hasLost, "board") };
+    unique_ptr<BoardInfo> bInfo { new BoardInfo(displayGrid, currPunish, playerID, deletedRow, nextTetro.get(), isTurn, menu, hasLost, "board") };
     return bInfo;
 }
