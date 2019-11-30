@@ -10,10 +10,16 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
     difficulty{ difficulty }, playerID{ playerID } {
     grid(HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
     isBlind = false;
+    menu = false;
+    hasLost = false;
     currPunish = "";
     sinceLastClear = 0;
     score = 0;
     deletedRow = -1;
+    if (playerID == 1)
+        isTurn = true;
+    else
+        isTurn = false;
     tetroFactory = LevelData(difficulty, path, seed);
     attach(display); //attach display as observer to board
     generateTetromino(); //make the starting tetromino
@@ -65,7 +71,9 @@ void Board::clearLine() {
             }
             linesCleared++;
             if (linesCleared != 0 && (linesCleared / 2) == 0) { //every 2 lines cleared, choose effect for opponent
-                choosePunishment();
+                menu = true; //set menu to true, allow only commands that deal with menu
+                notifyObservers();
+                menu = false; //allow regular commands to have effect again
             }
             sinceLastClear = 0; //reset counter for moves since last clear
             notifyObservers(); //notify to tetrominoes in case they might award extra points for removing completely
@@ -83,6 +91,7 @@ void Board::clearLine() {
             sufferPunishment("*"); //if it is level 4 and no lines cleared in 5 turns, suffer 1x1 block
     }
     isBlind = false; //reset blindness, if blind
+    isTurn = false; //end turn
     generateTetromino(); //make a new tetromino for next step, clears force effect and heavy effect
 }
 
@@ -98,72 +107,91 @@ bool Board::isGameOver(TetrominoInfo newest) {
     return false;
 }
 
-void Board::restart() {
-
-}
-
 void Board::performAction(string action, string path) { //handles input as a distinct unique string, calls action on current block
     if (action == "left" || action == "right" || action == "down") {
-        currTetro->move(action);
+        if (!menu)
+            currTetro->move(action);
     }
     else if (action == "clockwise" || action == "counterclockwise") {
-        currTetro->rotate(action);
+        if (!menu)
+            currTetro->rotate(action);
     }
     else if (action == "drop") {
-        currTetro->drop();
+        if (!menu)
+            currTetro->drop();
     }
     else if (action == "levelup") {
-        if (difficulty != 4) {
+        if (difficulty != 4 && !menu) {
             difficulty++;
             tetroFactory = LevelData(difficulty); //make new factory for blocks
         }
     }
     else if (action == "leveldown") {
-        if (difficulty != 0) {
+        if (difficulty != 0 && !menu) {
             difficulty--;
             tetroFactory = LevelData(difficulty); //make new factory for blocks
         }
     }
     else if (action == "random") {
-        if (difficulty == 3 || difficulty == 4) {
+        if (difficulty == 3 || difficulty == 4 && !menu) {
             tetroFactory = LevelData(difficulty); //remake factory guarenteed random
         }
     }
-    else if (action == "restart") {
-        restart(); //this may not be necessary in performAction, as main can call it directly (affects both boards)
-    }
     else if (action == "norandom") {
-        if (difficulty == 3 || difficulty == 4) {
+        if (difficulty == 3 || difficulty == 4 && !menu) {
             tetroFactory = LevelData(difficulty, path); //remake factory with path to sequence
         }
     }
-    else { //the remaining command will be to force own block
-        sufferPunishment(action);
-        notifyObservers();
+    else if (action == "blind") {
+        if (menu) { //if currently prompting user to choose effect
+            currPunish = "blind";
+        }
     }
-}
-
-void Board::choosePunishment() {
-    //somehow get input from user to decide on punishment
-    if () //blind case
-        currPunish = "blind";
-    else if () //heavy case
-        currPunish = "heavy";
-    else if () { //force case
-        if () //I force
-            currPunish = "I";
-        else if () //J force
-            currPunish = "J";
-        else if () //L force
+    else if (action == "heavy") {
+        if (menu) { //if currently prompting user to choose effect
+            currPunish = "heavy";
+        }
+    }
+    else if (action == "forceL") {
+        if (menu) { //if currently prompting user to choose effect
             currPunish = "L";
-        else if () //O force
-            currPunish = "O";
-        else if () //S force
-            currPunish = "S";
-        else if () //Z force
+        }
+    }
+    else if (action == "forceI") {
+        if (menu) { //if currently prompting user to choose effect
+            currPunish = "I";
+        }
+    }
+    else if (action == "forceZ") {
+        if (menu) { //if currently prompting user to choose effect
             currPunish = "Z";
-        else if () //T force
+        }
+    }
+    else if (action == "forceT") {
+        if (menu) { //if currently prompting user to choose effect
             currPunish = "T";
+        }
+    }
+    else if (action == "forceO") {
+        if (menu) { //if currently prompting user to choose effect
+            currPunish = "O";
+        }
+    }
+    else if (action == "forceS") {
+        if (menu) { //if currently prompting user to choose effect
+            currPunish = "S";
+        }
+    }
+    else if (action == "forceJ") {
+        if (menu) { //if currently prompting user to choose effect
+            currPunish = "J";
+        }
+    }
+    else { //the remaining commands will be to force own block
+        if (!menu) {
+            sufferPunishment(action);
+            notifyObservers();
+        }
     }
 }
 
@@ -256,7 +284,8 @@ void Board::notify(Subject &notifier) {
         else { //handling tetromino representation on internal grid
             if (castedInfo->previously.size() == 0) { //newly instantiated
                 if (isGameOver(*castedInfo)) {
-                    // do something when game is over
+                    hasLost = true;
+                    notifyObservers(); //display ending screen
                 }
             }
             else { //a move done to an existing nondropped tetromino
@@ -270,8 +299,10 @@ void Board::notify(Subject &notifier) {
         }
     }
     else { //if caller is opponent board, only case is to suffer effect
-        string effect = static_cast<BoardInfo *>(info)->punishType;
-        sufferPunishment(effect);
+        BoardInfo *castedBInfo = static_cast<BoardInfo *>(info);
+        if (!castedBInfo->isTurn)
+            isTurn = true;
+        sufferPunishment(castedBInfo->punishType);
     }
     notifyObservers(); //relay message to observers, namely the displays
 }
@@ -286,6 +317,6 @@ Info *Board::getInfo() const {
             }
         }
     }
-    unique_ptr<BoardInfo> bInfo { new BoardInfo(displayGrid, currPunish, deletedRow, "board") };
+    unique_ptr<BoardInfo> bInfo { new BoardInfo(displayGrid, currPunish, deletedRow, isTurn, menu, hasLost, "board") };
     return bInfo;
 }

@@ -16,6 +16,8 @@ class Board:public Subject, public Observer {
         Tetromino *currTetro;
         vector<Tetromino *> tetrominoes;
         bool isBlind;
+        bool isTurn;
+        bool menu;
 	    int sinceLastClear;
 	    int difficulty;
 	    int playerID;

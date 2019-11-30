@@ -12,7 +12,12 @@ struct BoardInfo:public Info{
 	vector<vector<char>> grid;
 	string punishType;
     int deletedRow;
-	BoardInfo(vector<vector<char>> &grid, string punishType, int deletedRow, string infoType); //specify that infoType is board
+    int difficulty;
+    int score;
+    bool isTurn;
+    bool menu;
+    bool hasLost;
+	BoardInfo(vector<vector<char>> &grid, string punishType, int deletedRow, bool isTurn, bool menu, bool hasLost, string infoType); //specify that infoType is board
     ~BoardInfo() override;
 };
 
