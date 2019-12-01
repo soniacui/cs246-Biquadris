@@ -7,7 +7,7 @@
 using namespace std;
 
 Board::Board(int difficulty, int playerID, Observer *display, string path, int seed): 
-    difficulty{ difficulty }, playerID{ playerID } {
+    difficulty{ difficulty }, display{ display }, path{ path }, seed{ seed }, playerID{ playerID } {
     grid(HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
     isBlind = false;
     menu = false;
@@ -23,6 +23,7 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
     tetroFactory = LevelData(difficulty, path, seed);
     attach(display); //attach display as observer to board
     generateTetromino(); //make the starting tetromino
+    notifyObservers(); //display starting state
 }
 
 void Board::generateTetromino() {
@@ -104,6 +105,28 @@ void Board::clearLine() {
     generateTetromino(); //make a new tetromino for next step, clears force effect and heavy effect
 }
 
+void Board::restart() {
+    currTetro = nullptr; //reset pointers
+    nextTetro.reset();
+    tetrominoes.clear();
+
+    grid(HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
+    isBlind = false;
+    menu = false;
+    hasLost = false;
+    currPunish = "";
+    sinceLastClear = 0;
+    score = 0;
+    deletedRow = -1;
+    if (playerID == 1)
+        isTurn = true;
+    else
+        isTurn = false;
+    tetroFactory = LevelData(difficulty, path, seed);
+    generateTetromino(); //make the starting tetromino
+    notifyObservers(); //display starting state
+}
+
 void Board::toggleRandom(string newPath) {
     tetroFactory = LevelData(difficulty, newPath); //make new factory with requested randomness
 }
@@ -116,7 +139,7 @@ bool Board::isGameOver(TetrominoInfo newest) {
     return false;
 }
 
-void Board::performAction(string action, string path) { //handles input as a distinct unique string, calls action on current block
+void Board::performAction(string action, string newPath) { //handles input as a distinct unique string, calls action on current block
     if (action == "left" || action == "right" || action == "down") {
         if (!menu)
             currTetro->move(action);
@@ -132,13 +155,13 @@ void Board::performAction(string action, string path) { //handles input as a dis
     else if (action == "levelup") {
         if (difficulty != 4 && !menu) {
             difficulty++;
-            tetroFactory = LevelData(difficulty); //make new factory for blocks
+            tetroFactory = LevelData(difficulty, path, seed); //make new factory for blocks
         }
     }
     else if (action == "leveldown") {
         if (difficulty != 0 && !menu) {
             difficulty--;
-            tetroFactory = LevelData(difficulty); //make new factory for blocks
+            tetroFactory = LevelData(difficulty, path, seed); //make new factory for blocks
         }
     }
     else if (action == "random") {
@@ -148,7 +171,7 @@ void Board::performAction(string action, string path) { //handles input as a dis
     }
     else if (action == "norandom") {
         if (difficulty == 3 || difficulty == 4 && !menu) {
-            tetroFactory = LevelData(difficulty, path); //remake factory with path to sequence
+            tetroFactory = LevelData(difficulty, newPath); //remake factory with path to sequence
         }
     }
     else if (action == "blind") {
@@ -275,7 +298,7 @@ void Board::sufferPunishment(string effect) {
         starPtr->drop(); //this immediately drops the starBlock
     }
     else if (effect == "heavy")
-        currTetro->increaseSpeed(2);
+        currTetro->toggleHeavy();
     else
         return;
 }

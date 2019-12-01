@@ -1,0 +1,16 @@
+info superclasas of two types
+type moved to tetro superclass
+subject class: vec obs is now unique pointer obs
+board takes 1 observer pointer and not one of each displays
+board destructor removed, generate tetro no longer returns tetro pointer
+board path removed
+performacion() added to board
+todelete is removed, replaced with int
+increaseSpeed() added to tetro
+forceGenerate() added to tetro
+isdropped added to tetro and info
+isheavy added to tetro
+removed choosepunishment()
+added isturn to board and info
+added several fields into info as well
+

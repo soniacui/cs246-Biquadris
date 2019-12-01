@@ -14,12 +14,15 @@ class Board:public Subject, public Observer {
 	    static int highScore = 0; //default set highscore to 0
         vector<vector<char>> grid;
     	string currPunish;
+        Observer *display;
         Tetromino *currTetro;
         unique_ptr<Tetromino> nextTetro;
         vector<Tetromino *> tetrominoes;
         bool isBlind;
         bool isTurn;
         bool menu;
+        string path;
+        int seed;
 	    int sinceLastClear;
 	    int difficulty;
 	    int playerID;
@@ -37,7 +40,6 @@ class Board:public Subject, public Observer {
 	    void restart();
         void performAction(string action, string path = "");
 	    void sufferPunishment(string effect); //augments tetroFactory/grid to accomodate effect
-	    void choosePunishment(); //prompt user to choose effect for opponent
 	    void generateTetromino(); //create next tetronimo to be dropped, add to tetrominoes
 };
 
