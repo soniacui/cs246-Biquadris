@@ -19,24 +19,24 @@ TextDisplay::TextDisplay(){
 
 void TextDisplay::notify(Subject &notifier){
 
-	isMenu = notifier.getInfo().menu;
+	isMenu = notifier.getInfo()->menu;
 
 if (notifier.getInfo().playerID == 1) {
 
-	gridP1 = notifier.getInfo().grid;
-	nextPieceP1 = notifier.getInfo().nextTetro.type;
-	levelP1 = notifier.getInfo().difficulty;
-	scoreP1 = notifier.getInfo().difficulty;
-	hasLostP1 = notifier.getInfo().hasLost;
+	gridP1 = notifier.getInfo()->grid;
+	nextPieceP1 = notifier.getInfo()->nextTetro.type;
+	levelP1 = notifier.getInfo()->difficulty;
+	scoreP1 = notifier.getInfo()->difficulty;
+	hasLostP1 = notifier.getInfo()->hasLost;
 
 }
 else (notifier.getInfo().playerID == 2) {
 	
-	gridP2 = notifier.getInfo().grid;
-	nextPieceP2 = notifier.getInfo().nextTetro.type;
-	levelP2 = notifier.getInfo().difficulty;
-	scoreP2 = notifier.getInfo().difficulty;
-	hasLostP2 = notifier.getInfo().hasLost;
+	gridP2 = notifier.getInfo()->grid;
+	nextPieceP2 = notifier.getInfo()->nextTetro.type;
+	levelP2 = notifier.getInfo()->difficulty;
+	scoreP2 = notifier.getInfo()->difficulty;
+	hasLostP2 = notifier.getInfo()->hasLost;
 }
 
 }
