@@ -27,7 +27,11 @@ class TextDisplay: public Observer
   //Recieves board and tetromino information for updating data
   void notify(Subject<Grid, NextPiece, Level, Score> &whoNotified);
 
-  //Prints the info textdisplay has
+  //Printing method the info textdisplay has
   friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);
+
+  //Displays using printing method
+  void display(const TextDisplay &td);
+
 };
 #endif
