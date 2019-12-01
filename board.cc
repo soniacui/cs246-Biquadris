@@ -227,10 +227,18 @@ void Board::performAction(string action, string newPath) { //handles input as a 
     }
 }
 
+void Board::deleteTetro(Tetromino *destroy) {
+    TetrominoInfo *tempInfo = destroy->getInfo(); //get info from current tetro
+    for (int i = 0; i < tempInfo->absCoords.size(); i++) {
+        grid[tempInfo->absCoords[i][1]][tempInfo->absCoords[i][0]] = ' '; //fill in its location
+    }
+}
+
 void Board::sufferPunishment(string effect) {
     if (effect == "blind")
         isBlind = true;
     else if (effect == "I") {
+        deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("I"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr { *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -239,6 +247,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "J") {
+        deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("J"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -247,6 +256,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "L") {
+        deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("L"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -255,6 +265,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "O") {
+        deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("O"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -263,6 +274,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "S") {
+        deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("S"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -271,6 +283,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "Z") {
+        deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("Z"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes
@@ -279,6 +292,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "T") {
+        deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("T"); //make a specific tetro as current
         unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
         observers.pop_back(); //delete previous current in observers and tetrominoes

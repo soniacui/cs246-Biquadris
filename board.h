@@ -29,6 +29,7 @@ class Board:public Subject, public Observer {
 	    int score;
         int deletedRow;
 	    LevelData tetroFactory;
+        void deleteTetro(Tetromino *destroy);
     public:
 	    Board(int difficulty, int playerID, Observer *display, string path = "", int seed = -1);
 	    void notify(Subject &notifier) override; //once notified, react as appropriate based on caller, would always call getInfo(), relay state change with notifyObservers()
