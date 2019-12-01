@@ -104,7 +104,7 @@ void Tetromino::move(string direction) { // move left/right
 
 	}
 
-	notify();  // notify observers
+	notifyObservers();  // notify observers
 
 }
 
@@ -129,7 +129,7 @@ void Tetromino::rotate(string direction) {
 
 	}
 
-	notify();
+	notifyObservers();
 }
 
 
@@ -176,7 +176,7 @@ void Tetromino::drop() {   // A TURN IS NOT OVER UNTIL THE BLOCK HAS BEEN DROPPE
 		absCoords[i][1] = currGrid.size() - absCoords[i][0] + bottom_max;
 	}	
 
-	notify();
+	notifyObservers();
 }
 
 
