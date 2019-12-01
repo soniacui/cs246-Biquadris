@@ -13,6 +13,7 @@ class Tetromino:public Subject, public Observer{
 	    int value;
 	    bool isDeleted;
         bool isDropped;
+		bool isHeavy;
         vector<vector<int>> previously; //remembers last position for grid to clear
 	    vector<vector<int>> absCoords;
 	    vector<vector<char>> currGrid;
@@ -25,6 +26,7 @@ class Tetromino:public Subject, public Observer{
         Info *getInfo() const override;
 	    void notify(Subject &notifier) override; //cares only about when toDelete is not empty
 	    virtual ~Tetromino() = 0; //default destructor, also make Tetromino abstract
+	    void toggleHeavy();
 };
 
 class IBlock:public Tetromino{
