@@ -3,16 +3,16 @@
 #include <vector>
 #include <memory>
 
-class Observer;
 class Info;
+class Observer;
 
 class Subject{
-	std::vector<unique_ptr<Observer>> observers;
+	std::vector<std::unique_ptr<Observer>> observers;
     public:
 	void attach(Observer *observer);
     void clear();
 	void notifyObservers() const;
-	virtual Info getInfo() const = 0;
+	virtual Info *getInfo() const = 0;
 };
 
 #endif

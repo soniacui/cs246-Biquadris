@@ -11,8 +11,8 @@ class TextDisplay: public Observer
 	bool hasLostP2;
 	int boardSizeX;
 	int boardSizeY;
- 	std::vector<std::vector<char>> gridP1
- 	std::vector<std::vector<char>> gridP2
+ 	std::vector<std::vector<char>> gridP1;
+ 	std::vector<std::vector<char>> gridP2;
 	char nextPieceP1;
 	char nextPieceP2;
 	int levelP1;
@@ -25,7 +25,7 @@ class TextDisplay: public Observer
   TextDisplay();
 
   //Recieves board and tetromino information for updating data
-  void notify(Subject<Grid, NextPiece, Level, Score> &whoNotified);
+  void notify(Subject &whoNotified);
 
   //Printing method the info textdisplay has
   friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);

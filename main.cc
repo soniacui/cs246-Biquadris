@@ -9,7 +9,7 @@ using namespace std;
 
 int main (int argc, char* argv[]) {
 
-  Controller controller = Controller(argc, argv);
+  Controller controller(argc, argv);
 
 }
 

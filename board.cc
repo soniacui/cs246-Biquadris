@@ -6,6 +6,8 @@
 
 using namespace std;
 
+Board::highScore = 0;
+
 Board::Board(int difficulty, int playerID, Observer *display, string path, int seed): 
     difficulty{ difficulty }, display{ display }, path{ path }, seed{ seed }, playerID{ playerID } {
     grid(HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
