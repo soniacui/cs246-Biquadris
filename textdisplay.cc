@@ -75,7 +75,7 @@ ostream &operator<<(std::ostream &out, const TextDisplay &td)
 	out << "Next: " << td.nextPieceP1 << endl;
 	}
 	else if (td.playerID == 2){
-	out << "/t/t/t Next: " << td.nextPieceP1 << endl;
+	out << "/t/t/t Next: " << td.nextPieceP2 << endl;
 	}
 	
 
@@ -85,3 +85,8 @@ ostream &operator<<(std::ostream &out, const TextDisplay &td)
 	}
 	return out;
 }
+
+void TextDisplay::display(const TextDisplay &td){
+cout << td << endl; 
+}
+
