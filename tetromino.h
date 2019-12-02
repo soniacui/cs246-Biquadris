@@ -27,6 +27,8 @@ class Tetromino:public Subject, public Observer{
 	    void notify(Subject &notifier) override; //cares only about when toDelete is not empty
 	    virtual ~Tetromino() = 0; //default destructor, also make Tetromino abstract
 	    void toggleHeavy();
+	    void updatePreviously();
+	    void moveDown();
 };
 
 class IBlock:public Tetromino{
