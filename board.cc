@@ -6,7 +6,7 @@
 
 using namespace std;
 
-Board::highScore = 0;
+int Board::highScore = 0;
 
 Board::Board(int difficulty, int playerID, Observer *display, string path, int seed): 
     difficulty{ difficulty }, display{ display }, path{ path }, seed{ seed }, playerID{ playerID } {
@@ -22,7 +22,7 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
         isTurn = true;
     else
         isTurn = false;
-    tetroFactory = LevelData(difficulty, path, seed);
+    tetroFactory(difficulty, path, seed);
     attach(display); //attach display as observer to board
     generateTetromino(); //make the starting tetromino
     notifyObservers(); //display starting state
@@ -365,6 +365,6 @@ Info *Board::getInfo() const {
             }
         }
     }
-    unique_ptr<BoardInfo> bInfo { new BoardInfo(displayGrid, currPunish, playerID, deletedRow, nextTetro.get(), isTurn, menu, hasLost, "board") };
+    BoardInfo *bInfo = new BoardInfo(displayGrid, currPunish, playerID, deletedRow, nextTetro.get(), isTurn, menu, hasLost, "board");
     return bInfo;
 }

@@ -3,14 +3,14 @@
 #include <vector>
 
 struct Info{
-	string infoType;
-	Info(string infoType = "tetromino"); //default constructs to information about a tetromino
+	std::string infoType;
+	Info(std::string infoType = "tetromino"); //default constructs to information about a tetromino
 	virtual ~Info() = 0;
 };
 
 struct BoardInfo:public Info{
-	vector<vector<char>> grid;
-	string punishType;
+	std::vector<std::vector<char>> grid;
+	std::string punishType;
     int playerID;
     int deletedRow;
     int difficulty;
@@ -19,19 +19,19 @@ struct BoardInfo:public Info{
     bool isTurn;
     bool menu;
     bool hasLost;
-	BoardInfo(vector<vector<char>> &grid, string punishType, int playerID, int deletedRow, Tetromino *nextTetro, bool isTurn, bool menu, bool hasLost, string infoType); //specify that infoType is board
+	BoardInfo(std::vector<std::vector<char>> &grid, std::string punishType, int playerID, int deletedRow, Tetromino *nextTetro, bool isTurn, bool menu, bool hasLost, std::string infoType); //specify that infoType is board
     ~BoardInfo() override;
 };
 
 struct TetrominoInfo:public Info{
-    vector<vector<int>> previously;
-	vector<vector<int>> absCoords;
+	std::vector<std::vector<int>> previously;
+	std::vector<std::vector<int>> absCoords;
 	char type;
 	bool isDeleted;
     bool isDropped;
     bool isHeavy;
 	int value;
-	TetrominoInfo(vector<vector<int>> &previously, vector<vector<int>> &absCoords, char type, int value, bool isDeleted, bool isDropped);
+	TetrominoInfo(std::vector<std::vector<int>> &previously, std::vector<std::vector<int>> &absCoords, char type, int value, bool isDeleted, bool isDropped);
     ~TetrominoInfo() override;
 };
 

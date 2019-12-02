@@ -2,12 +2,12 @@
 #define _BOARD_
 #include "subject.h"
 #include "observer.h"
+#include "level.h"
+#include "tetromino.h"
 #include <vector>
 #include <memory>
 
 class TetrominoInfo;
-class Tetromino;
-class LevelData;
 
 class Board:public Subject, public Observer {
         const int HEIGHT = 15;

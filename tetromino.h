@@ -14,13 +14,13 @@ class Tetromino:public Subject, public Observer{
 	    bool isDeleted;
         bool isDropped;
 		bool isHeavy;
-        vector<vector<int>> previously; //remembers last position for grid to clear
-	    vector<vector<int>> absCoords;
-	    vector<vector<char>> currGrid;
+		std::vector<std::vector<int>> previously; //remembers last position for grid to clear
+		std::vector<std::vector<int>> absCoords;
+		std::vector<std::vector<char>> currGrid;
     public:
 	    Tetromino(int speed, int value);
-	    void move(string direction);
-	    void rotate(string direction); //notifyObservers called upon every state change (includes move, rotate, drop, and instances of notify)
+	    void move(std::string direction);
+	    void rotate(std::string direction); //notifyObservers called upon every state change (includes move, rotate, drop, and instances of notify)
 	    void drop();
         void increaseSpeed(int increase);
         Info *getInfo() const override;
@@ -76,3 +76,5 @@ class StarBlock:public Tetromino{
         StarBlock(int speed, int value, char type = '*');
         ~StarBlock() override;
 };
+
+#endif
