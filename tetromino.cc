@@ -14,28 +14,28 @@ Tetromino::Tetromino(int difficulty) : value{ difficulty } {
     }
 }
 
-IBlock::IBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::IBlock(int difficulty) : Tetromino(difficulty) {}
 IBlock::~IBlock() {}
 
-IBlock::JBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::JBlock(int difficulty) : Tetromino(difficulty) {}
 IBlock::~JBlock() {}
 
-IBlock::LBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::LBlock(int difficulty) : Tetromino(difficulty) {}
 IBlock::~LBlock() {}
 
-IBlock::OBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::OBlock(int difficulty) : Tetromino(difficulty) {}
 IBlock::~OBlock() {}
 
-IBlock::SBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::SBlock(int difficulty) : Tetromino(difficulty) {}
 IBlock::~SBlock() {}
 
-IBlock::ZBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::ZBlock(int difficulty) : Tetromino(difficulty) {}
 IBlock::~ZBlock() {}
 
-IBlock::TBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::TBlock(int difficulty) : Tetromino(difficulty) {}
 IBlock::~TBlock() {}
 
-IBlock::StarBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::StarBlock(int difficulty) : Tetromino(difficulty) {}
 IBlock::~StarBlock() {}
 
 void Tetromino::notify(Subject &notifier) {
