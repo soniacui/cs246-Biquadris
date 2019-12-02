@@ -11,14 +11,16 @@ class Controller {
 	int argc;
 
 	//boards
- 	Board b1;
-  	Board b2;
+ 	Board *b1;
+  	Board *b2;
 
 	//displays
-	TextDisplay *text_display1;
-	TextDisplay *text_display2;
-	//Display *graphics_display1;
-	//Display *graphics_display2;
+	Observer *display1;
+	Observer *display2;
+	//TextDisplay text_display1;
+	//TextDisplay text_display2;
+	//Display graphics_display1;
+	//Display graphics_display2;
 
 	//command line arg variables
   	int seed;
@@ -37,10 +39,10 @@ class Controller {
                              "drop", "levelup", "leveldown", "norandom", "random", 
                              "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart", 
  		             "blind", "heavy", "force"};
-	char *argv[];
+	char** argv;
 
 	public:
-	  Controller(int argc, char* argv[]);
+	  Controller(int argc, char** argv);
 	  void readArgs(); // read cmd line args
 	  void readStdin(); // read commands from stdin
 	  void readFile(std::string file); // read commands from file

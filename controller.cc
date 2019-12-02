@@ -14,7 +14,7 @@
 using namespace std;
 
 //ctor
-Controller::Controller(int argc, char* argv[]) : argc{argc}, argv{argv} {
+Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
 	//command line arg variables
 	seed = -1;
 	startLevel = 0;
@@ -35,20 +35,18 @@ Controller::Controller(int argc, char* argv[]) : argc{argc}, argv{argv} {
 
 
   	// initialize displays
- 	text_display1 = new TextDisplay();
- 	text_display2 = new TextDisplay();
+ 	display1 = new TextDisplay();
+ 	display2 = new TextDisplay();
  	if (!textOnly) {
   		//graphics_display1 = new GraphicsDisplay(); //what do we do with graphics display?
  		//graphics_display2 = new GraphicsDisplay(); //it's not in the Board ctor
   	}
 
  	// initialize boards
-	LevelData lvl1 = LevelData(startLevel, seqfile1, seed);
-	LevelData lvl2 = LevelData(startLevel, seqfile2, seed);
-  	b1 = Board{lvl1, text_display1, seqfile1, seed, startLevel, 1};
-  	b2 = Board{lvl2, text_display2, seqfile2, seed, startLevel, 2};
-  	b1.attach(&b2); //attach boards to each other
-  	b2.attach(&b1);
+  	b1 = new Board(startLevel, 1, display1, seqfile1, seed);
+  	b2 = new Board(startLevel, 2, display2, seqfile2, seed);
+  	b1->attach(b2); //attach boards to each other
+  	b2->attach(b1);
 
 }
 
@@ -114,7 +112,7 @@ void Controller::matchCmd(string s) {
 	}
 
 	cmd = commands.at(matched_index);
-    if (!b1.menu && !b2.menu) {
+    //if (!b1.menu && !b2.menu) {
     	cout << "matching command: " << endl;
     	if (cmd == commands.at(0)) { 
        		cout << "command: left" << endl;
@@ -198,7 +196,7 @@ void Controller::matchCmd(string s) {
    	} else {
 		throw 1;
 	}
-     } else {
+     //} else {
 	   if (cmd == commands.at(19)) {
 		cout << "command: blind" << endl;
 		multAction(1, "blind");
@@ -211,11 +209,11 @@ void Controller::matchCmd(string s) {
 		cin >> type;
 		multAction(1, "force" + type);
 	   }
-     }
-        cout << text_display1;
-        if (checkGameOver()) {  // if game over, instant restart?
-		multAction(1, "restart");
-   	}
+     //}
+        cout << display1;
+        //if (checkGameOver()) {  // if game over, instant restart?
+	//	multAction(1, "restart");
+   	//}
 
     }
    
@@ -246,41 +244,41 @@ void Controller::readFile(string file) {
   }
 }
 
-bool Controller::checkGameOver() {
-	return (b1.isGameOver() || b2.isGameOver());
-}
+//bool Controller::checkGameOver() {
+//	return (b1.isGameOver() || b2.isGameOver());
+//}
 
-void Controller::multAction(int multiplier, string action, string file = "") {
+void Controller::multAction(int multiplier, string action, string file) {
 	if (action == "norandom" || action == "random") {
-		if (b1.isTurn) {
-			b1.toggleRandom(file);
+		if (b1->isTurn) {
+			b1->toggleRandom(file);
 		} else {
-			b2.toggleRandom(file);
+			b2->toggleRandom(file);
 		}
 	} else if (action == "sequence") {
 		readFile(file);
 	} else if (action == "restart") { //restart
-        	b1.restart();
-		b2.restart();
-		b1.attach(&b2);
-		b2.attach(&b1);
+        	b1->restart();
+		b2->restart();
+		b1->attach(b2);
+		b2->attach(b1);
 	} else if (action == "blind" || action == "heavy") { //will not end turn
-		if (b1.isTurn) {
-			b1.performAction(action);
+		if (b1->isTurn) {
+			b1->performAction(action);
 		} else {
-			b2.performAction(action);
+			b2->performAction(action);
 		}
 	} else {   //can potentially end turns
 		//move/rotate/drop/force
 		for (int i = 0; i < multiplier; ++i) {
-			if (b1.isTurn) {
-				b1.performAction(action);
-				if (!b1.isTurn) {
+			if (b1->isTurn) {
+				b1->performAction(action);
+				if (!b1->isTurn) {
 					break;
 				}
 			} else {
-				b2.performAction(action);
-				if (!b2.isTurn) {
+				b2->performAction(action);
+				if (!b2->isTurn) {
 					break;
 				}
 			}

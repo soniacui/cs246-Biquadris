@@ -20,7 +20,6 @@ class Board:public Subject, public Observer {
 	Tetromino *nextTetro;
 	std::vector<Tetromino *> tetrominoes;
         bool isBlind;
-        bool isTurn;
         bool menu;
 	bool hasLost;
 	std::string path;
@@ -33,6 +32,7 @@ class Board:public Subject, public Observer {
 	    LevelData tetroFactory;
         void deleteTetro(Tetromino *destroy);
     public:
+	bool isTurn;
 	    Board(int difficulty, int playerID, Observer *display, std::string path = "", int seed = -1);
 	    void notify(Subject &notifier) override; //once notified, react as appropriate based on caller, would always call getInfo(), relay state change with notifyObservers()
 	    std::unique_ptr<BoardInfo> getInfo() const override; //creates and returns a BoardInfo pointer
