@@ -118,6 +118,27 @@ Tetromino* LevelData::generateTetromino() {
 	}  
     }
     return t;
+}
 
+
+//returns a tetromino pointer of the desired type{L, J, O ... *}
+Tetromino* LevelData::forceGenerate(std::string typeForced) {
+	Tetromino *t;
+	if (typeForced == "S") {
+		t = new SBlock(difficulty);
+	} else if (typeForced == "Z") {
+		t = new ZBlock(difficulty);
+	} else if (typeForced == "I") {
+		t = new IBlock(difficulty);
+	} else if (typeForced == "O") {
+		t = new OBlock(difficulty);
+	} else if (typeForced == "J") {
+		t = new JBlock(difficulty);
+	} else if (typeForced == "L") {
+		t = new LBlock(difficulty);
+	} else {
+		t = new TBlock(difficulty);
+	}  
+	return t;
 }
 
