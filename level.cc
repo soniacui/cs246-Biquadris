@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include "tetromino.h"
 #include "level.h"
@@ -8,35 +9,36 @@
 using namespace std;
 
 LevelData::LevelData(int difficulty, string path, int seed): difficulty{difficulty}, path{path}, seed{seed} {
-	vector<string> seq;
-	string s = "";
-	/*if (path != "") {             //load input seq  // ****** this requires that a new LevelData object is created every time the user calls norandom xxx
-            ifstream input (path);                      //        so we can read from the top of the file again
-            while (path >> s) {
-		input.push(s);
+	index = 0;
+	string s;
+	if (path != "") {             //load input seq  
+            ifstream input (path, std::ifstream::in);        
+            while (input >> s) {
+		seq.push_back(s);
 	    }
-	}*/
+	}
         if (seed != -1) {
 	    srand(seed);
 	}
 }
 
-Tetromino* LevelData::generateTetromino() { // potential problem: if user calls norandom xxx, random, does LevelData still retain the old filename?
-
-    //current problems: 
-    // see *******s
-    // not quite sure if seed works properly
-    // need to add vector to uml/.h file
+Tetromino* LevelData::generateTetromino() {
 
     //generate normally
     //norandom/random (gives blocks)
     //seed
     
-    int n = -1;
+    int n = -1; 
+    string s;
     Tetromino *t;
-    /*if (difficulty == 0 || path != "") { // if user has called norandom with a file path
-	s = seq.at(0);              // ********* check if empty? 
-        seq.pop_front();
+    if (difficulty == 0 || path != "") { // if user has called norandom with a file path
+	if (index > seq.size()) {
+		index = 0; // if we reached the end of our seq file, go back to top
+	
+	} 
+	s = seq.at(index);  
+	++index;
+
 	if (s == "S") {
 		t = new SBlock(difficulty);
 	} else if (s == "Z") {
@@ -53,7 +55,7 @@ Tetromino* LevelData::generateTetromino() { // potential problem: if user calls 
 		t = new TBlock(difficulty);
 	}
 	return t;
-    */
+    }
     if (seed != -1) {  // if user has supplied a seed
 	n = abs(rand()) % 7;        
     } 
@@ -116,6 +118,27 @@ Tetromino* LevelData::generateTetromino() { // potential problem: if user calls 
 	}  
     }
     return t;
+}
 
+
+//returns a tetromino pointer of the desired type{L, J, O ... *}
+Tetromino* LevelData::forceGenerate(std::string typeForced) {
+	Tetromino *t;
+	if (typeForced == "S") {
+		t = new SBlock(difficulty);
+	} else if (typeForced == "Z") {
+		t = new ZBlock(difficulty);
+	} else if (typeForced == "I") {
+		t = new IBlock(difficulty);
+	} else if (typeForced == "O") {
+		t = new OBlock(difficulty);
+	} else if (typeForced == "J") {
+		t = new JBlock(difficulty);
+	} else if (typeForced == "L") {
+		t = new LBlock(difficulty);
+	} else {
+		t = new TBlock(difficulty);
+	}  
+	return t;
 }
 
