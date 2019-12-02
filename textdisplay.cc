@@ -1,5 +1,6 @@
 #include "textdisplay.h"
 #include "subject.h"
+#include "tetromino.h"
 #include <iostream>
 #include <vector>
 
@@ -13,30 +14,31 @@ TextDisplay::TextDisplay(){
 	int boardSizeY = 15;
 	gridP1 = vector<vector<char>> (boardSizeY, vector<char> (boardSizeX, ' '));
 	gridP2 = vector<vector<char>> (boardSizeY, vector<char> (boardSizeX, ' '));
-	nextPieceP1 = 'l'
-	nextPieceP2 = 'l'
+    nextPieceP1 = 'l';
+    nextPieceP2 = 'l';
 }
 
 void TextDisplay::notify(Subject &notifier){
 
 	isMenu = notifier.getInfo()->menu;
 
-if (notifier.getInfo().playerID == 1) {
+if (notifier.getInfo()->playerID == 1) {
 
 	gridP1 = notifier.getInfo()->grid;
-	nextPieceP1 = notifier.getInfo()->nextTetro.type;
+	nextPieceP1 = notifier.getInfo()->nextTetro->getType();
 	levelP1 = notifier.getInfo()->difficulty;
 	scoreP1 = notifier.getInfo()->difficulty;
 	hasLostP1 = notifier.getInfo()->hasLost;
-
+    playerID = notifier.getInfo()->playerID;
 }
-else (notifier.getInfo().playerID == 2) {
+else if (notifier.getInfo()->playerID == 2) {
 	
 	gridP2 = notifier.getInfo()->grid;
-	nextPieceP2 = notifier.getInfo()->nextTetro.type;
+	nextPieceP2 = notifier.getInfo()->nextTetro->getType();
 	levelP2 = notifier.getInfo()->difficulty;
 	scoreP2 = notifier.getInfo()->difficulty;
 	hasLostP2 = notifier.getInfo()->hasLost;
+    playerID = notifier.getInfo()->playerID;
 }
 
 }
@@ -44,18 +46,18 @@ else (notifier.getInfo().playerID == 2) {
 ostream &operator<<(std::ostream &out, const TextDisplay &td)
 {
 	if (td.isMenu) { 
-	out << "----------------------------" < <endl;
+	out << "----------------------------" << endl;
 	out << " || Select a punishment || " << endl;
 		out << "(1) blind" << endl;
 		out << "(2) heavy" << endl;
 		out << "(3) force" << endl;
-	out << "----------------------------" < <endl;
+	out << "----------------------------" << endl;
 	}
 	else {
 	//Prints top half of Game UI
 	out << "Level:  " << td.levelP1 << "/t/t Level:  " << td.levelP2 << endl;
 	out << "Score:  " << td.scoreP1 << "/t/t Score:  " << td.scoreP2 << endl;
-	out << "--------------------------------------------------" <<endl;
+	out << "--------------------------------------------------" << endl;
 	
 	//Prints playing field
 	for (int y = 0; y < td.boardSizeY; y++){
@@ -70,7 +72,7 @@ ostream &operator<<(std::ostream &out, const TextDisplay &td)
 	}
 
 	//Prints bottom half of Game UI
-	out << "--------------------------------------------------" <<endl;
+	out << "--------------------------------------------------" << endl;
 	if (td.playerID == 1){
 	out << "Next: " << td.nextPieceP1 << endl;
 	}

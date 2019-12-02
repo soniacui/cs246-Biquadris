@@ -14,4 +14,4 @@ removed choosepunishment()
 added isturn to board and info
 added several fields into info as well
 added deleteTetro to board.h/.cc
-
+added getType() to tetro

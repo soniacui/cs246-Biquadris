@@ -19,6 +19,7 @@ class TextDisplay: public Observer
 	int levelP2;
 	int scoreP1;
 	int scoreP2;
+    int playerID;
 
  public:
   //Constructor

@@ -6,11 +6,11 @@
 using namespace std;
 
 void Subject::attach(Observer *observer) {
-    unique_ptr<Observer> ObPtr{ unique_ptr<Observer> {observer} };
+    shared_ptr<Observer> ObPtr{ shared_ptr<Observer> {observer} };
     observers.emplace_back(ObPtr);
 }
 
-void Subject::notifyObservers() const {
+void Subject::notifyObservers() {
     for (auto &observer : observers) {
         observer->notify(*this);
     }

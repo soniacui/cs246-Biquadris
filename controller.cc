@@ -35,16 +35,16 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
 
 
   	// initialize displays
- 	display1 = new TextDisplay();
- 	display2 = new TextDisplay();
+ 	display = new TextDisplay();
  	if (!textOnly) {
   		//graphics_display1 = new GraphicsDisplay(); //what do we do with graphics display?
  		//graphics_display2 = new GraphicsDisplay(); //it's not in the Board ctor
   	}
 
  	// initialize boards
-  	b1 = new Board(startLevel, 1, display1, seqfile1, seed);
-  	b2 = new Board(startLevel, 2, display2, seqfile2, seed);
+  	b1 = new Board(startLevel, 1, display, seqfile1, seed);
+  	b2 = new Board(startLevel, 2, display, seqfile2, seed);
+
   	b1->attach(b2); //attach boards to each other
   	b2->attach(b1);
 
@@ -210,7 +210,7 @@ void Controller::matchCmd(string s) {
 		multAction(1, "force" + type);
 	   }
      //}
-        cout << display1;
+        cout << display;
         //if (checkGameOver()) {  // if game over, instant restart?
 	//	multAction(1, "restart");
    	//}

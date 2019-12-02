@@ -5,7 +5,11 @@
 
 using namespace std;
 
-Tetromino::Tetromino(int difficulty) : value{ difficulty } {
+char Tetromino::getType() {
+    return type;
+}
+
+Tetromino::Tetromino(int difficulty, char type) : value{ difficulty }, type{ type } {
     if (difficulty == 3 || difficulty == 4) {
         speed = 1;
     }
@@ -14,38 +18,38 @@ Tetromino::Tetromino(int difficulty) : value{ difficulty } {
     }
 }
 
-IBlock::IBlock(int difficulty) : Tetromino(difficulty) {}
+IBlock::IBlock(int difficulty, char type) : Tetromino(difficulty, type)  {}
 IBlock::~IBlock() {}
 
-IBlock::JBlock(int difficulty) : Tetromino(difficulty) {}
-IBlock::~JBlock() {}
+JBlock::JBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+JBlock::~JBlock() {}
 
-IBlock::LBlock(int difficulty) : Tetromino(difficulty) {}
-IBlock::~LBlock() {}
+LBlock::LBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+LBlock::~LBlock() {}
 
-IBlock::OBlock(int difficulty) : Tetromino(difficulty) {}
-IBlock::~OBlock() {}
+OBlock::OBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+OBlock::~OBlock() {}
 
-IBlock::SBlock(int difficulty) : Tetromino(difficulty) {}
-IBlock::~SBlock() {}
+SBlock::SBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+SBlock::~SBlock() {}
 
-IBlock::ZBlock(int difficulty) : Tetromino(difficulty) {}
-IBlock::~ZBlock() {}
+ZBlock::ZBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+ZBlock::~ZBlock() {}
 
-IBlock::TBlock(int difficulty) : Tetromino(difficulty) {}
-IBlock::~TBlock() {}
+TBlock::TBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+TBlock::~TBlock() {}
 
-IBlock::StarBlock(int difficulty) : Tetromino(difficulty) {}
-IBlock::~StarBlock() {}
+StarBlock::StarBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+StarBlock::~StarBlock() {}
 
 void Tetromino::notify(Subject &notifier) {
-    BoardInfo *bInfo = notifier.getInfo(); //all its observers' getInfo() return type BoardInfo
+    BoardInfo *bInfo = notifier.getInfo().get(); //all its observers' getInfo() return type BoardInfo
     if (bInfo->deletedRow != -1) { //case that the board had deleted a row, must update absCoords
         if (isDeleted) //if already deleted, no new points awarded
             return;
         for (int i = 0; i < absCoords.size(); i++) {
             if (absCoords[i][1] == bInfo->deletedRow) { //remove block's coordinates that have been deleted
-                absCoords.erase(i);
+                absCoords.erase(absCoords.begin() + i);
                 i--;
             }
             else if (absCoords[i][1] > bInfo->deletedRow) { //shift block's coordinates above the deleted line down
@@ -61,11 +65,12 @@ void Tetromino::notify(Subject &notifier) {
         return;
 }
 
-unique_ptr<TetrominoInfo> Tetromino::getTetroInfo() const {
-    unique_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, speed, isDeleted, isHeavy) };
+shared_ptr<TetrominoInfo> Tetromino::getTetroInfo() {
+    shared_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, speed, isDropped, isDeleted, isHeavy) };
     return tInfo;
 }
 
+shared_ptr<BoardInfo> Subject::getInfo() const { return nullptr; }
 
 // ***************isHeavy needs to be given a default value in the ctor
 void Tetromino::toggleHeavy() {
@@ -193,7 +198,8 @@ void Tetromino::rotate(string direction) {
 		for (int i = 0; i < absCoords.size(); ++i) {
 			absCoords[i][0] = absCoords[i][0] - left_max; //shift x to origin
 			absCoords[i][1] = absCoords[i][1] - bottom_max; //shift y to origin
-			temp.emplace_back({absCoords[i][1], -(absCoords[i][0])}); // (y, -x)
+            vector <int> temp2 = { absCoords[i][1], -(absCoords[i][0]) };
+			temp.emplace_back(temp2); // (y, -x)
 		}
 		absCoords = temp; // rotate	
 

@@ -15,8 +15,7 @@ class Controller {
   	Board *b2;
 
 	//displays
-	Observer *display1;
-	Observer *display2;
+	Observer *display;
 	//TextDisplay text_display1;
 	//TextDisplay text_display2;
 	//Display graphics_display1;

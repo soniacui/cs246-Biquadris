@@ -7,15 +7,15 @@
 class Observer;
 
 class Subject{
-	std::vector<std::unique_ptr<Observer>> observers;
+	std::vector<std::shared_ptr<Observer>> observers;
     public:
 	void attach(Observer *observer);
     void remove();
     void clear();
-	void notifyObservers() const;
-	virtual std::unique_ptr<BoardInfo> getInfo() const;
-    virtual std::unique_ptr<TetrominoInfo> getTetroInfo() const;
-    virtual ~Subject();
+	void notifyObservers();
+	virtual std::shared_ptr<BoardInfo> getInfo() const;
+    virtual std::shared_ptr<TetrominoInfo> getTetroInfo();
+    virtual ~Subject() = 0;
 };
 
 #endif

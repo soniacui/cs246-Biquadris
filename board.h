@@ -35,7 +35,7 @@ class Board:public Subject, public Observer {
 	bool isTurn;
 	    Board(int difficulty, int playerID, Observer *display, std::string path = "", int seed = -1);
 	    void notify(Subject &notifier) override; //once notified, react as appropriate based on caller, would always call getInfo(), relay state change with notifyObservers()
-	    std::unique_ptr<BoardInfo> getInfo() const override; //creates and returns a BoardInfo pointer
+	    std::shared_ptr<BoardInfo> getInfo() const override; //creates and returns a BoardInfo pointer
 	    bool checkDropped(TetrominoInfo tetroInfo) const;  //checks to see if tetromino move signals end of turn
 	    void clearLine(); //contains all end of turn effects, resets tetroFactory and currPunish to clean state, additional call to notifyObservers() for each removal
         void toggleRandom(std::string newPath = "");
