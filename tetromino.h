@@ -4,8 +4,6 @@
 #include "subject.h"
 #include <vector>
 
-class Info;
-
 class Tetromino:public Subject, public Observer{
     protected:
         char type;
@@ -23,7 +21,7 @@ class Tetromino:public Subject, public Observer{
 	    void rotate(std::string direction); //notifyObservers called upon every state change (includes move, rotate, drop, and instances of notify)
 	    void drop();
         void increaseSpeed(int increase);
-        Info *getInfo() const override;
+	std::unique_ptr<TetrominoInfo> getTetroInfo() const override;
 	    void notify(Subject &notifier) override; //cares only about when toDelete is not empty
 	    virtual ~Tetromino() = 0; //default destructor, also make Tetromino abstract
 	    void toggleHeavy();

@@ -16,6 +16,8 @@ void Subject::notifyObservers() const {
     }
 }
 
-void remove() {
+void Subject::remove() {
     observers.pop_back();
 }
+
+Subject::~Subject() {}

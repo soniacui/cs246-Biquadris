@@ -2,6 +2,8 @@
 #define _INFO_
 #include <vector>
 
+class Tetromino;
+
 struct Info{
 	std::string infoType;
 	Info(std::string infoType = "tetromino"); //default constructs to information about a tetromino
