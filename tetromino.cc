@@ -17,8 +17,6 @@ Tetromino::Tetromino(int difficulty, char type) : value{ difficulty }, type{ typ
     else {
         speed = 0;
     }
-    cout << "tetro has size: " << observers.size();
-    //clear();
 }
 
 IBlock::IBlock(int difficulty, char type) : Tetromino(difficulty, type) {}

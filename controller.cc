@@ -35,8 +35,9 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
 
 
   	// initialize displays
- 	display = new TextDisplay();
- 	if (!textOnly) {
+	if (textOnly)
+ 		display = new TextDisplay();
+	else {
   		//graphics_display1 = new GraphicsDisplay(); //what do we do with graphics display?
  		//graphics_display2 = new GraphicsDisplay(); //it's not in the Board ctor
   	}
@@ -47,7 +48,6 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
 
   	b1->attach(b2); //attach boards to each other
   	b2->attach(b1);
-
 }
 
 // read cmd line args

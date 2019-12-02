@@ -29,13 +29,13 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
     attach(display); //attach display as observer to board
     generateTetromino(); //make the starting tetromino
     notifyObservers(); //display starting state
+    //cout << playerID << observers.size() << currTetro->observers.size() << endl;
 }
 
 void Board::generateTetromino() {
     if (nextTetro == nullptr) {
         currTetro = tetroFactory.generateTetromino();
-	cout << "currtetro: " << currTetro->observers.size() << endl;
-	cout << "following is tetro's" << endl;
+	//cout << "following is tetro's" << endl;
         currTetro->attach(this); //set this board as observer to the tetro
         tetrominoes.emplace_back(currTetro); //save a pointer to all tetrominoes generated in tetrominoes
         attach(currTetro); //add tetromino as an observer

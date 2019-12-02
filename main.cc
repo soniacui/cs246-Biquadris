@@ -10,6 +10,6 @@ using namespace std;
 int main (int argc, char* argv[]) {
 
   Controller controller(argc, argv);
-
+  controller.readStdin();
 }
 

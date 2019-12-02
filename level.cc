@@ -32,11 +32,15 @@ Tetromino* LevelData::generateTetromino() {
     string s;
     Tetromino *t;
     if (difficulty == 0 || path != "") { // if user has called norandom with a file path
-	if (index > seq.size()) {
+	    if (path == ""){
+		    cout << "OOPS, NO PATH GIVEN" << endl;
+		    //IF DIFFICULTY WAS 0 AND NO PATH WAS GIVEN, THEN DEFAULT TO THE ORIGINAL FILES SOMEHOW PLS FILL ME
+	    }
+	    if (index > seq.size()) {
 		index = 0; // if we reached the end of our seq file, go back to top
 	
-	} 
-	s = seq.at(index);  
+	}
+	s = seq.at(index); 
 	++index;
 
 	if (s == "S") {

@@ -7,10 +7,10 @@
 using namespace std;
 
 void Subject::attach(Observer *observer) {
-	cout << "size: " << observers.size() <<endl;
+	//cout << "size: " << observers.size() <<endl;
     shared_ptr<Observer> ObPtr{ shared_ptr<Observer> {observer} };
     observers.emplace_back(ObPtr);
-    cout << "size2: " << observers.size() <<endl;
+    //cout << "size2: " << observers.size() <<endl;
 }
 
 void Subject::notifyObservers() {
