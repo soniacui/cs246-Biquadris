@@ -9,8 +9,8 @@ using namespace std;
 int Board::highScore = 0;
 
 Board::Board(int difficulty, int playerID, Observer *display, string path, int seed): 
-    difficulty{ difficulty }, display{ display }, path{ path }, seed{ seed }, playerID{ playerID } {
-    grid(HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
+    tetroFactory {LevelData(difficulty, path, seed)}, display{ display }, path{ path }, seed{ seed }, difficulty{ difficulty }, playerID{ playerID } {
+    grid = vector<vector<char>> (HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
     isBlind = false;
     menu = false;
     hasLost = false;
@@ -22,26 +22,26 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
         isTurn = true;
     else
         isTurn = false;
-    tetroFactory(difficulty, path, seed);
+    //tetroFactory(difficulty, path, seed);
     attach(display); //attach display as observer to board
     generateTetromino(); //make the starting tetromino
     notifyObservers(); //display starting state
 }
 
 void Board::generateTetromino() {
-    if (nextTetro.get() == nullptr) {
+    if (nextTetro == nullptr) {
         currTetro = tetroFactory.generateTetromino();
         tetrominoes.emplace_back(currTetro); //save a pointer to all tetrominoes generated in tetrominoes
-        unique_ptr<Tetromino> ownedPtr{ *currTetro }; //make unique pointer to give to observers
-        observers.emplace_back(ownedPtr); //add tetromino as an observer
+        unique_ptr<Tetromino> ownedPtr{ currTetro }; //make unique pointer to give to observers
+        attach(currTetro); //add tetromino as an observer
     }
     else {
-        currTetro = nextTetro.get(); //replace currTetro with nextTetro
-        tetrominoes.emplace_back(nextTetro.get()); //put the next tetromino onto list of tetrominoes ptrs
-        observers.emplace_back(nextTetro); //put next tetromino as an observer
+        currTetro = nextTetro; //replace currTetro with nextTetro
+        tetrominoes.emplace_back(nextTetro); //put the next tetromino onto list of tetrominoes ptrs
+        attach(nextTetro); //put next tetromino as an observer
     }
 
-    nextTetro = make_unique<Tetromino>(tetroFactory.generateTetromino()); //make new next tetromino
+    nextTetro = tetroFactory.generateTetromino(); //make new next tetromino
 }
 
 bool Board::checkDropped(TetrominoInfo tetroInfo) const {
@@ -55,7 +55,7 @@ bool Board::checkDropped(TetrominoInfo tetroInfo) const {
                         (tetroInfo.absCoords[j][1] == tetroInfo.absCoords[i][1] - 1))
                         continue; //continue when the not-free space in question is part of itself
                 }
-                return true //since there is no free space under a pixel of the tetromino, and it isn't itself, it has dropped
+                return true; //since there is no free space under a pixel of the tetromino, and it isn't itself, it has dropped
             }
         }
         return false;
@@ -64,7 +64,7 @@ bool Board::checkDropped(TetrominoInfo tetroInfo) const {
 }
 
 void Board::clearLine() {
-    bool linesCleared = 0;
+    int linesCleared = 0;
     for (int i = 0; i < HEIGHT; i++) { //loop through rows
         bool toBeCleared = true;
         for (int j = 0; j < WIDTH; j++) { //loop through columns
@@ -109,10 +109,10 @@ void Board::clearLine() {
 
 void Board::restart() {
     currTetro = nullptr; //reset pointers
-    nextTetro.reset();
+    nextTetro = nullptr;
     tetrominoes.clear();
 
-    grid(HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
+    grid = vector<vector<char>> (HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
     isBlind = false;
     menu = false;
     hasLost = false;
@@ -135,7 +135,7 @@ void Board::toggleRandom(string newPath) {
 
 bool Board::isGameOver(TetrominoInfo newest) {
     for (int i = 0; i < newest.absCoords.size(); i++) {
-        if (grid[newest.absCoords[i][1][newest.absCoords[i][0]] != ' ']) //if any spots of the new block overlap with an existing one, GG
+        if (grid[newest.absCoords[i][1]][newest.absCoords[i][0]] != ' ') //if any spots of the new block overlap with an existing one, GG
             return true;
     }
     return false;
@@ -230,7 +230,7 @@ void Board::performAction(string action, string newPath) { //handles input as a 
 }
 
 void Board::deleteTetro(Tetromino *destroy) {
-    TetrominoInfo *tempInfo = destroy->getInfo(); //get info from current tetro
+    TetrominoInfo *tempInfo = static_cast<TetrominoInfo *>(destroy->getInfo()); //get info from current tetro
     for (int i = 0; i < tempInfo->absCoords.size(); i++) {
         grid[tempInfo->absCoords[i][1]][tempInfo->absCoords[i][0]] = ' '; //fill in its location
     }
@@ -242,75 +242,75 @@ void Board::sufferPunishment(string effect) {
     else if (effect == "I") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("I"); //make a specific tetro as current
-        unique_ptr<Tetromino> forcedPtr { *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers and tetrominoes
+        unique_ptr<Tetromino> forcedPtr { currTetro }; //make it a unique ptr
+        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
-        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "J") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("J"); //make a specific tetro as current
-        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers and tetrominoes
+        unique_ptr<Tetromino> forcedPtr{ currTetro }; //make it a unique ptr
+        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
-        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "L") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("L"); //make a specific tetro as current
-        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers and tetrominoes
+        unique_ptr<Tetromino> forcedPtr{ currTetro }; //make it a unique ptr
+        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
-        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "O") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("O"); //make a specific tetro as current
-        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers and tetrominoes
+        unique_ptr<Tetromino> forcedPtr{ currTetro }; //make it a unique ptr
+        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
-        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "S") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("S"); //make a specific tetro as current
-        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers and tetrominoes
+        unique_ptr<Tetromino> forcedPtr{ currTetro }; //make it a unique ptr
+        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
-        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "Z") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("Z"); //make a specific tetro as current
-        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers and tetrominoes
+        unique_ptr<Tetromino> forcedPtr{ currTetro }; //make it a unique ptr
+        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
-        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "T") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("T"); //make a specific tetro as current
-        unique_ptr<Tetromino> forcedPtr{ *currTetro }; //make it a unique ptr
-        observers.pop_back(); //delete previous current in observers and tetrominoes
+        unique_ptr<Tetromino> forcedPtr{ currTetro }; //make it a unique ptr
+        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
-        observers.emplace_back(forcedPtr); //replace with new current in both observers and tetrominoes
+        attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "*") {
         //currTetro does not change, this is a strict add-on
 
         Tetromino *specialTetro = tetroFactory.forceGenerate("*"); //make a specific tetro *
-        unique_ptr<Tetromino> starPtr{ *specialTetro }; //make it a unique ptr
+        unique_ptr<Tetromino> starPtr{ specialTetro }; //make it a unique ptr
 
         //nothing is popped off since this is a strict addition
 
-        observers.emplace_back(starPtr); //add starTetromino to observers (award potential points), not added to tetrominoes since it cannot be forced
+        attach(specialTetro); //add starTetromino to observers (award potential points), not added to tetrominoes since it cannot be forced
         starPtr->drop(); //this immediately drops the starBlock
     }
     else if (effect == "heavy")
@@ -326,8 +326,8 @@ void Board::notify(Subject &notifier) {
         if (castedInfo->isDeleted) { //case for tetromino has been removed from board
             score += (castedInfo->value + 1) * (castedInfo->value + 1); //add points
             deletedRow = -1; //reset deleted row to default
-            if (score > Board.highScore) //change static highscore if my score is greater
-                Board.highScore = score;
+            if (score > Board::highScore) //change static highscore if my score is greater
+                Board::highScore = score;
         }
         else { //handling tetromino representation on internal grid
             if (castedInfo->previously.size() == 0) { //newly instantiated
@@ -365,6 +365,6 @@ Info *Board::getInfo() const {
             }
         }
     }
-    BoardInfo *bInfo = new BoardInfo(displayGrid, currPunish, playerID, deletedRow, nextTetro.get(), isTurn, menu, hasLost, "board");
+    BoardInfo *bInfo = new BoardInfo(displayGrid, currPunish, playerID, deletedRow, nextTetro, isTurn, menu, hasLost, "board");
     return bInfo;
 }

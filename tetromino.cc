@@ -242,7 +242,7 @@ void Tetromino::drop() {
 	notifyObservers();
 }
 
-
+Tetromino::~Tetromino() {}
 
 
 

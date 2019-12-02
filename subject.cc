@@ -6,7 +6,7 @@
 using namespace std;
 
 void Subject::attach(Observer *observer) {
-    unique_ptr<Observer> ObPtr { *observer };
+    unique_ptr<Observer> ObPtr{ unique_ptr<Observer> {observer} };
     observers.emplace_back(ObPtr);
 }
 
@@ -14,4 +14,8 @@ void Subject::notifyObservers() const {
     for (auto &observer : observers) {
         observer->notify(*this);
     }
+}
+
+void remove() {
+    observers.pop_back();
 }

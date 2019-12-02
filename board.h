@@ -17,11 +17,12 @@ class Board:public Subject, public Observer {
 	std::string currPunish;
         Observer *display;
         Tetromino *currTetro;
-	std::unique_ptr<Tetromino> nextTetro;
+	Tetromino *nextTetro;
 	std::vector<Tetromino *> tetrominoes;
         bool isBlind;
         bool isTurn;
         bool menu;
+	bool hasLost;
 	std::string path;
         int seed;
 	    int sinceLastClear;
@@ -38,7 +39,7 @@ class Board:public Subject, public Observer {
 	    bool checkDropped(TetrominoInfo tetroInfo) const;  //checks to see if tetromino move signals end of turn
 	    void clearLine(); //contains all end of turn effects, resets tetroFactory and currPunish to clean state, additional call to notifyObservers() for each removal
         void toggleRandom(std::string newPath = "");
-	    bool isGameOver();
+	    bool isGameOver(TetrominoInfo newest);
 	    void restart();
         void performAction(std::string action, std::string path = "");
 	    void sufferPunishment(std::string effect); //augments tetroFactory/grid to accomodate effect
