@@ -34,7 +34,8 @@ struct TetrominoInfo:public Info{
     bool isDropped;
     bool isHeavy;
 	int value;
-	TetrominoInfo(std::vector<std::vector<int>> &previously, std::vector<std::vector<int>> &absCoords, char type, int value, bool isDeleted, bool isDropped, bool isHeavy);
+    int speed;
+	TetrominoInfo(std::vector<std::vector<int>> &previously, std::vector<std::vector<int>> &absCoords, char type, int value, int speed, bool isDeleted, bool isDropped, bool isHeavy);
     ~TetrominoInfo() override;
 };
 

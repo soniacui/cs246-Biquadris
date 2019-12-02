@@ -47,7 +47,7 @@ void Board::generateTetromino() {
 bool Board::checkDropped(TetrominoInfo tetroInfo) const {
     if (tetroInfo.isDropped)
         return true;
-    if (tetroInfo.isHeavy) {
+    if (tetroInfo.isHeavy || tetroInfo.speed != 0) {
         for (int i = 0; i < tetroInfo.absCoords.size(); i++) {
             if (grid[tetroInfo.absCoords[i][1] - 1][tetroInfo.absCoords[i][0]] != ' ') { //check if below each pixel of tetromino is not a free space
                 for (int j = 0; j < tetroInfo.absCoords.size(); i++) {

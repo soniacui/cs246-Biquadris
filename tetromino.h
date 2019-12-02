@@ -16,7 +16,7 @@ class Tetromino:public Subject, public Observer{
 		std::vector<std::vector<int>> absCoords;
 		std::vector<std::vector<char>> currGrid;
     public:
-	    Tetromino(int speed, int value);
+	    Tetromino(int difficulty);
 	    void move(std::string direction);
 	    void rotate(std::string direction); //notifyObservers called upon every state change (includes move, rotate, drop, and instances of notify)
 	    void drop();

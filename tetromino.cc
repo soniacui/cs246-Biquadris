@@ -5,6 +5,39 @@
 
 using namespace std;
 
+Tetromino::Tetromino(int difficulty) : value{ difficulty } {
+    if (difficulty == 3 || difficulty == 4) {
+        speed = 1;
+    }
+    else {
+        speed = 0;
+    }
+}
+
+IBlock::IBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::~IBlock() {}
+
+IBlock::JBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::~JBlock() {}
+
+IBlock::LBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::~LBlock() {}
+
+IBlock::OBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::~OBlock() {}
+
+IBlock::SBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::~SBlock() {}
+
+IBlock::ZBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::~ZBlock() {}
+
+IBlock::TBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::~TBlock() {}
+
+IBlock::StarBlock(int speed, int value) : Tetromino(speed, value) {}
+IBlock::~StarBlock() {}
+
 void Tetromino::notify(Subject &notifier) {
     BoardInfo *bInfo = notifier.getInfo(); //all its observers' getInfo() return type BoardInfo
     if (bInfo->deletedRow != -1) { //case that the board had deleted a row, must update absCoords
@@ -28,8 +61,8 @@ void Tetromino::notify(Subject &notifier) {
         return;
 }
 
-unique_ptr<TetrominoInfo> Tetromino::getInfo() const {
-    unique_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, isDeleted) };
+unique_ptr<TetrominoInfo> Tetromino::getTetroInfo() const {
+    unique_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, speed, isDeleted, isHeavy) };
     return tInfo;
 }
 
