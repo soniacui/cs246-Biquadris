@@ -3,6 +3,7 @@
 #include "level.h"
 #include <memory>
 #include <vector>
+#include <iostream> /////////////////////rem
 
 using namespace std;
 
@@ -12,6 +13,8 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
     tetroFactory {LevelData(difficulty, path, seed)}, display{ display }, path{ path }, seed{ seed }, difficulty{ difficulty }, playerID{ playerID } {
     grid = vector<vector<char>> (HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
     isBlind = false;
+    currTetro = nullptr;
+    nextTetro = nullptr;
     menu = false;
     hasLost = false;
     currPunish = "";
@@ -31,15 +34,15 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
 void Board::generateTetromino() {
     if (nextTetro == nullptr) {
         currTetro = tetroFactory.generateTetromino();
-        Observer *thisObserver = this;
-        currTetro->attach(thisObserver); //set this board as observer to the tetro
+	cout << "currtetro: " << currTetro->observers.size() << endl;
+	cout << "following is tetro's" << endl;
+        currTetro->attach(this); //set this board as observer to the tetro
         tetrominoes.emplace_back(currTetro); //save a pointer to all tetrominoes generated in tetrominoes
         attach(currTetro); //add tetromino as an observer
     }
     else {
         currTetro = nextTetro; //replace currTetro with nextTetro
-        Observer *thisObserver = this;
-        currTetro->attach(thisObserver); //set this board as observer to the tetro
+        currTetro->attach(this); //set this board as observer to the tetro
         tetrominoes.emplace_back(nextTetro); //put the next tetromino onto list of tetrominoes ptrs
         attach(nextTetro); //put next tetromino as an observer
     }

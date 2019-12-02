@@ -2,6 +2,7 @@
 #include "info.h"
 #include <memory>
 #include <vector>
+#include <iostream> //////asdsadasdsadasdasREMOVE
 
 using namespace std;
 
@@ -16,9 +17,11 @@ Tetromino::Tetromino(int difficulty, char type) : value{ difficulty }, type{ typ
     else {
         speed = 0;
     }
+    cout << "tetro has size: " << observers.size();
+    //clear();
 }
 
-IBlock::IBlock(int difficulty, char type) : Tetromino(difficulty, type)  {}
+IBlock::IBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
 IBlock::~IBlock() {}
 
 JBlock::JBlock(int difficulty, char type) : Tetromino(difficulty, type) {}

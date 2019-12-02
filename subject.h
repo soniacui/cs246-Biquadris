@@ -7,8 +7,9 @@
 class Observer;
 
 class Subject{
+public: //change back!
 	std::vector<std::shared_ptr<Observer>> observers;
-    public:
+    //public:
 	void attach(Observer *observer);
     void remove();
     void clear();
