@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #include "controller.h"
 #include "board.h"
@@ -23,10 +24,10 @@ Controller::Controller(int argc, char* argv[]) : argc{argc}, argv{argv} {
 	readArgs(); // update command line arg variables
 
 	// input variables
-        string s = ""
-        string cmd = ""
-        char c = 0;
-        int multiplier = 0;
+        s = "";
+        cmd = "";
+        c = 0;
+        multiplier = 0;
 	// command list
         vector<string> commands = {"left", "right", "down", "clockwise", "counterclockwise",
                              "drop", "levelup", "leveldown", "norandom", "random", 
@@ -34,18 +35,20 @@ Controller::Controller(int argc, char* argv[]) : argc{argc}, argv{argv} {
 
 
   	// initialize displays
- 	text_display1 = new Display{...};
- 	text_display2 = new Display{...};
+ 	text_display1 = new TextDisplay();
+ 	text_display2 = new TextDisplay();
  	if (!textOnly) {
-  		graphics_display1 = new Display{...}; //what do we do with graphics display?
- 		graphics_display2 = new Display{...}; //it's not in the Board ctor
+  		//graphics_display1 = new GraphicsDisplay(); //what do we do with graphics display?
+ 		//graphics_display2 = new GraphicsDisplay(); //it's not in the Board ctor
   	}
 
  	// initialize boards
-  	b1 = Board{startLevel, 1, text_display1, seqfile1, seed};
-  	b2 = Board{startLevel, 2, text_display2, seqfile2, seed};
-  	b1.attach(b2); //attach boards to each other
-  	b2.attach(b1);
+	LevelData lvl1 = LevelData(startLevel, seqfile1, seed);
+	LevelData lvl2 = LevelData(startLevel, seqfile2, seed);
+  	b1 = Board{lvl1, text_display1, seqfile1, seed, startLevel, 1};
+  	b2 = Board{lvl2, text_display2, seqfile2, seed, startLevel, 2};
+  	b1.attach(&b2); //attach boards to each other
+  	b2.attach(&b1);
 
 }
 
@@ -75,9 +78,8 @@ void Controller::readArgs() {
 }
 
 void Controller::matchCmd(string s) {
-
     cout << "creating stream: " << endl;
-    istringstream iss(s);
+    istringstream iss (s);
 
     // check if command contains a multiplier
     cout << "peeking: " << endl;
@@ -210,9 +212,9 @@ void Controller::matchCmd(string s) {
 		multAction(1, "force" + type);
 	   }
      }
-        cout << display;
+        cout << text_display1;
         if (checkGameOver()) {  // if game over, instant restart?
-		multAction(1, restart);
+		multAction(1, "restart");
    	}
 
     }
@@ -260,8 +262,8 @@ void Controller::multAction(int multiplier, string action, string file = "") {
 	} else if (action == "restart") { //restart
         	b1.restart();
 		b2.restart();
-		b1.attach(b2);
-		b2.attach(b1);
+		b1.attach(&b2);
+		b2.attach(&b1);
 	} else if (action == "blind" || action == "heavy") { //will not end turn
 		if (b1.isTurn) {
 			b1.performAction(action);
