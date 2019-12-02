@@ -28,8 +28,8 @@ void Tetromino::notify(Subject &notifier) {
         return;
 }
 
-Info *Tetromino::getInfo() const {
-    TetrominoInfo tInfo = new TetrominoInfo(previously, absCoords, type, value, isDeleted);
+unique_ptr<TetrominoInfo> Tetromino::getInfo() const {
+    unique_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, isDeleted) };
     return tInfo;
 }
 

@@ -2,8 +2,8 @@
 #define _SUBJECT_
 #include <vector>
 #include <memory>
+#include "info.h"
 
-class Info;
 class Observer;
 
 class Subject{
@@ -13,7 +13,9 @@ class Subject{
     void remove();
     void clear();
 	void notifyObservers() const;
-	virtual Info *getInfo() const = 0;
+	virtual std::unique_ptr<BoardInfo> getInfo() const;
+    virtual std::unique_ptr<TetrominoInfo> getTetroInfo() const;
+    virtual ~Subject();
 };
 
 #endif
