@@ -210,7 +210,7 @@ void Controller::matchCmd(string s) {
 		multAction(1, "force" + type);
 	   }
      //}
-        cout << display;
+        cout << *static_cast<TextDisplay *>(display) << endl;
         //if (checkGameOver()) {  // if game over, instant restart?
 	//	multAction(1, "restart");
    	//}

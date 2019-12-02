@@ -245,11 +245,10 @@ void Board::deleteTetro(Tetromino *destroy) {
 void Board::sufferPunishment(string effect) {
     if (effect == "blind")
         isBlind = true;
-    /*else if (effect == "I") {
+    else if (effect == "I") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("I"); //make a specific tetro as current
-        Observer *thisObserver = this;
-        currTetro->attach(thisObserver); //set this board as observer to the tetro
+        currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
@@ -258,8 +257,7 @@ void Board::sufferPunishment(string effect) {
     else if (effect == "J") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("J"); //make a specific tetro as current
-        Observer *thisObserver = this;
-        currTetro->attach(thisObserver); //set this board as observer to the tetro
+        currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
@@ -268,8 +266,7 @@ void Board::sufferPunishment(string effect) {
     else if (effect == "L") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("L"); //make a specific tetro as current
-        Observer *thisObserver = this;
-        currTetro->attach(thisObserver); //set this board as observer to the tetro
+        currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
@@ -278,8 +275,7 @@ void Board::sufferPunishment(string effect) {
     else if (effect == "O") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("O"); //make a specific tetro as current
-        Observer *thisObserver = this;
-        currTetro->attach(thisObserver); //set this board as observer to the tetro
+        currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
@@ -288,8 +284,7 @@ void Board::sufferPunishment(string effect) {
     else if (effect == "S") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("S"); //make a specific tetro as current
-        Observer *thisObserver = this;
-        currTetro->attach(thisObserver); //set this board as observer to the tetro
+        currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
@@ -298,8 +293,7 @@ void Board::sufferPunishment(string effect) {
     else if (effect == "Z") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("Z"); //make a specific tetro as current
-        Observer *thisObserver = this;
-        currTetro->attach(thisObserver); //set this board as observer to the tetro
+        currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
@@ -308,8 +302,7 @@ void Board::sufferPunishment(string effect) {
     else if (effect == "T") {
         deleteTetro(currTetro); //removes current tetro off the grid
         currTetro = tetroFactory.forceGenerate("T"); //make a specific tetro as current
-        Observer *thisObserver = this;
-        currTetro->attach(thisObserver); //set this board as observer to the tetro
+        currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
@@ -319,15 +312,13 @@ void Board::sufferPunishment(string effect) {
         //currTetro does not change, this is a strict add-on
 
         Tetromino *specialTetro = tetroFactory.forceGenerate("*"); //make a specific tetro *
-        Observer *thisObserver = this;
-        specialTetro->attach(thisObserver); //set this board as observer to the tetro
+        specialTetro->attach(this); //set this board as observer to the tetro
 
         //nothing is popped off since this is a strict addition
 
         attach(specialTetro); //add starTetromino to observers (award potential points), not added to tetrominoes since it cannot be forced
         specialTetro->drop(); //this immediately drops the starBlock
     }
-    */
     else if (effect == "heavy")
         currTetro->toggleHeavy();
     else
