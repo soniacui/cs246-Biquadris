@@ -16,7 +16,8 @@ TextDisplay::TextDisplay(){
 	gridP2 = vector<vector<char>> (boardSizeY, vector<char> (boardSizeX, ' '));
     nextPieceP1 = 'l';
     nextPieceP2 = 'l';
-    isInit1, isInit2 = false;
+    isInit1 = false; 
+	    isInit2 = false;
 }
 
 void TextDisplay::notify(Subject &notifier){

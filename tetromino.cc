@@ -12,9 +12,23 @@ char Tetromino::getType() {
 
 void Tetromino::updateGrid(vector<vector<char>> grid) {
     currGrid = grid;
+    cout << "I HAVE UPDATED TO HAVE THIS GRID: " << endl;
+    for (int i = 17; i >= 0; i--) {
+        for (int j = 0; j < 11; j++) {
+            cout << this->currGrid[i][j];
+        }
+        cout << endl;
+    }
 }
 
 Tetromino::Tetromino(vector<vector<char>> currGrid, int difficulty, char type) : currGrid{ currGrid }, value { difficulty }, type{ type } {
+    cout << "I HAVE THIS GRID: " << endl;
+    for (int i = 17; i >= 0; i--) {
+        for (int j = 0; j < 11; j++) {
+            cout << this->currGrid[i][j];
+        }
+        cout << endl;
+    }
     if (difficulty == 3 || difficulty == 4) {
         speed = 1;
     }
@@ -169,6 +183,13 @@ void Tetromino::moveDown() {
 			cout << absCoords[i][0] << ", " << absCoords[i][1] << endl;
 		}
 	}
+    cout << "I HAVE THIS GRID: " << endl;
+    for (int i = 17; i >= 0; i--) {
+        for (int j = 0; j < 11; j++) {
+            cout << this->currGrid[i][j];
+        }
+        cout << endl;
+    }
 }
 
 // dir = 1 moves 1 right, dir = -1 moves 1 left
