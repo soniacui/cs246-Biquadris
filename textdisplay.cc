@@ -11,7 +11,7 @@ TextDisplay::TextDisplay(){
 
 	isMenu = false;
 	boardSizeX = 11;
-	boardSizeY = 15;
+	boardSizeY = 18;
 	gridP1 = vector<vector<char>> (boardSizeY, vector<char> (boardSizeX, ' '));
 	gridP2 = vector<vector<char>> (boardSizeY, vector<char> (boardSizeX, ' '));
     nextPieceP1 = 'l';

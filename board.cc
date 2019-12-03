@@ -11,7 +11,7 @@ int Board::highScore = 0;
 
 Board::Board(int difficulty, int playerID, Observer *display, string path, int seed): 
     tetroFactory {LevelData(difficulty, path, seed)}, display{ display }, path{ path }, seed{ seed }, difficulty{ difficulty }, playerID{ playerID } {
-    grid = vector<vector<char>> (HEIGHT, vector<char>(WIDTH, '-')); //initialize values
+    grid = vector<vector<char>> (HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
     isBlind = false;
     currTetro = nullptr;
     nextTetro = nullptr;
@@ -87,6 +87,7 @@ void Board::clearLine() {
                 toBeCleared = false; //if there is a space in current line, do not remove line
         }
         if (toBeCleared) { //if current line has no spaces, perform removal
+		cout << "clearing" << endl;
             deletedRow = i;
             for (int y = 0; y < HEIGHT; y++) { //from bottom up
                 if (y == HEIGHT - 1) { //very first row is always fresh
@@ -206,47 +207,79 @@ void Board::performAction(string action, string newPath) { //handles input as a 
         if (menu) { //if currently prompting user to choose effect
             currPunish = "L";
         }
+	else{
+		sufferPunishment("L");
+		notifyObservers();
+	}
     }
     else if (action == "forceI") {
         if (menu) { //if currently prompting user to choose effect
             currPunish = "I";
         }
+        else{
+                sufferPunishment("I");
+                notifyObservers();
+        }
+
     }
     else if (action == "forceZ") {
         if (menu) { //if currently prompting user to choose effect
             currPunish = "Z";
         }
+        else{
+                sufferPunishment("Z");
+                notifyObservers();
+        }
+
     }
     else if (action == "forceT") {
         if (menu) { //if currently prompting user to choose effect
             currPunish = "T";
+        }
+        else{
+                sufferPunishment("T");
+                notifyObservers();
         }
     }
     else if (action == "forceO") {
         if (menu) { //if currently prompting user to choose effect
             currPunish = "O";
         }
+        else{
+                sufferPunishment("O");
+                notifyObservers();
+        }
     }
     else if (action == "forceS") {
         if (menu) { //if currently prompting user to choose effect
             currPunish = "S";
+        }
+        else{
+                sufferPunishment("S");
+                notifyObservers();
         }
     }
     else if (action == "forceJ") {
         if (menu) { //if currently prompting user to choose effect
             currPunish = "J";
         }
+        else{
+                sufferPunishment("J");
+                notifyObservers();
+        }
     }
+    /*
     else { //the remaining commands will be to force own block
         if (!menu) {
             sufferPunishment(action);
             notifyObservers();
         }
     }
+    */
 }
 
 void Board::deleteTetro(Tetromino *destroy) {
-    TetrominoInfo *tempInfo = destroy->getTetroInfo().get(); //get info from current tetro
+    shared_ptr<TetrominoInfo> tempInfo = destroy->getTetroInfo(); //get info from current tetro
     for (int i = 0; i < tempInfo->absCoords.size(); i++) {
         grid[tempInfo->absCoords[i][1]][tempInfo->absCoords[i][0]] = ' '; //fill in its location
     }
@@ -257,63 +290,64 @@ void Board::sufferPunishment(string effect) {
         isBlind = true;
     else if (effect == "I") {
         deleteTetro(currTetro); //removes current tetro off the grid
+        remove(tetrominoes.size()); //delete previous current in observers and tetrominoes
         currTetro = tetroFactory.forceGenerate(grid, "I"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
-        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "J") {
         deleteTetro(currTetro); //removes current tetro off the grid
+        remove(tetrominoes.size()); //delete previous current in observers and tetrominoes
         currTetro = tetroFactory.forceGenerate(grid, "J"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
-        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "L") {
+	    cout << "11111" << endl;
         deleteTetro(currTetro); //removes current tetro off the grid
+        remove(tetrominoes.size()); //delete previous current in observers and tetrominoes
         currTetro = tetroFactory.forceGenerate(grid, "L"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
-        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "O") {
         deleteTetro(currTetro); //removes current tetro off the grid
+        remove(tetrominoes.size()); //delete previous current in observers and tetrominoes
         currTetro = tetroFactory.forceGenerate(grid, "O"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
-        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "S") {
         deleteTetro(currTetro); //removes current tetro off the grid
+        remove(tetrominoes.size()); //delete previous current in observers and tetrominoes
         currTetro = tetroFactory.forceGenerate(grid, "S"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
-        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "Z") {
         deleteTetro(currTetro); //removes current tetro off the grid
+        remove(tetrominoes.size()); //delete previous current in observers and tetrominoes
         currTetro = tetroFactory.forceGenerate(grid, "Z"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
-        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
     }
     else if (effect == "T") {
         deleteTetro(currTetro); //removes current tetro off the grid
+        remove(tetrominoes.size()); //delete previous current in observers and tetrominoes
         currTetro = tetroFactory.forceGenerate(grid, "T"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
-        remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
@@ -363,7 +397,8 @@ void Board::notify(Subject &notifier) {
 		    cout << tInfo->absCoords.size() << endl;
 		    cout << "f.5555555" << endl;
 		for (int i = 0; i < tInfo->absCoords.size(); i++) {
-		    grid[tInfo->previously[i][1]][tInfo->previously[i][0]] = '$'; //fill old location
+			cout << tInfo->absCoords[i][0]  << ", " << tInfo->absCoords[i][1] << endl;
+		    grid[tInfo->previously[i][1]][tInfo->previously[i][0]] = ' '; //fill old location
 		}
                 for (int i = 0; i < tInfo->absCoords.size(); i++) {
                     grid[tInfo->absCoords[i][1]][tInfo->absCoords[i][0]] = tInfo->type; //new location

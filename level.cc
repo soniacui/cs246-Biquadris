@@ -127,6 +127,7 @@ Tetromino* LevelData::generateTetromino(vector<vector<char>> grid) {
 
 //returns a tetromino pointer of the desired type{L, J, O ... *}
 Tetromino* LevelData::forceGenerate(vector<vector<char>> grid, std::string typeForced) {
+	cout << "3333" << endl;
 	Tetromino *t;
 	if (typeForced == "S") {
 		t = new SBlock(grid, difficulty);

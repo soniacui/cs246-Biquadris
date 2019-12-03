@@ -28,37 +28,37 @@ Tetromino::Tetromino(vector<vector<char>> currGrid, int difficulty, char type) :
 }
 
 IBlock::IBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = { {0, 14}, {0, 13}, {0, 12}, {0, 11} };
+    absCoords = { {0, 14}, {1, 14}, {2, 14}, {3, 14} };
 }
 IBlock::~IBlock() {}
 
 JBlock::JBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = { {0, 14}, {0, 13}, {0, 12}, {1, 14} };
+    absCoords = { {0, 15}, {0, 14}, {1, 14}, {2, 14} };
 }
 JBlock::~JBlock() {}
 
 LBlock::LBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = { {0, 13}, {1, 13}, {2, 13}, {2, 14} };
+    absCoords = { {0, 14}, {1, 14}, {2, 14}, {2, 15} };
 }
 LBlock::~LBlock() {}
 
 OBlock::OBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = { {0, 14}, {0, 13}, {1, 14}, {1, 13} };
+    absCoords = { {0, 14}, {1, 14}, {0, 15}, {1, 15} };
 }
 OBlock::~OBlock() {}
 
 SBlock::SBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = { {0, 13}, {1, 13}, {1, 14}, {2, 14} };
+    absCoords = { {0, 14}, {1, 14}, {1, 15}, {2, 15} };
 }
 SBlock::~SBlock() {}
 
 ZBlock::ZBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = { {0, 14}, {1, 14}, {1, 13}, {2, 13} };
+    absCoords = { {0, 15}, {1, 15}, {1, 14}, {2, 14} };
 }
 ZBlock::~ZBlock() {}
 
 TBlock::TBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = { {0, 14}, {1, 14}, {2, 14}, {1, 13} };
+    absCoords = { {0, 15}, {1, 15}, {2, 15}, {1, 14} };
 }
 TBlock::~TBlock() {}
 
@@ -293,8 +293,9 @@ void Tetromino::drop() {
 	int smallest_diff = currGrid.size() - 1;
 	int diff = 0;
 	for (int i = left_max; i <= right_max; ++i) { // cols of current block
+		diff = 0;
 		for (int j = 0; j < currGrid.size(); ++j) { // rows of currGrid
-			if (currGrid[i][j] != ' ') {
+			if (currGrid[i][j] == ' ') {
 				++diff;
 			} else {
 				break;
@@ -307,9 +308,9 @@ void Tetromino::drop() {
 
 	// shift block as down as possible
 	for (int i = 0; i < absCoords.size(); ++i) {
-		absCoords[i][1] = absCoords[i][1] - smallest_diff;
+		absCoords[i][1] = absCoords[i][1] - smallest_diff + 1;
 	}	
-
+	isDropped = true;
 	notifyObservers();
 }
 

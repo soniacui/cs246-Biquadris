@@ -23,8 +23,12 @@ void Subject::clear() {
 	observers.clear();
 }
 
-void Subject::remove() {
-    observers.pop_back();
+void Subject::remove(int size) {
+    if (size == 1) {
+        observers.erase(observers.begin() + 1);
+    }
+    else
+        observers.pop_back();
 }
 
 Subject::~Subject() {}

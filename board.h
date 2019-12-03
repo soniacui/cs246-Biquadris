@@ -10,7 +10,7 @@
 class TetrominoInfo;
 
 class Board:public Subject, public Observer {
-        const int HEIGHT = 15;
+        const int HEIGHT = 18;
         const int WIDTH = 11;
 	static int highScore; //default set highscore to 0 in .cc
 	std::vector<std::vector<char>> grid;

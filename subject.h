@@ -10,7 +10,7 @@ class Subject{
 	std::vector<std::shared_ptr<Observer>> observers;
     public:
 	void attach(Observer *observer);
-    void remove();
+    void remove(int size);
     void clear();
 	void notifyObservers();
 	virtual std::shared_ptr<BoardInfo> getInfo() const;
