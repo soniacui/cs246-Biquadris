@@ -23,6 +23,7 @@ class Tetromino:public Subject, public Observer{
 	   int findLeftMost();
 		int findRightMost();
 		int findBottomMost();
+		void moveLeftRight(int dir);
         void increaseSpeed(int increase);
 	std::shared_ptr<TetrominoInfo> getTetroInfo() override;
 	    void notify(Subject &notifier) override; //cares only about when toDelete is not empty
