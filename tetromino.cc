@@ -314,44 +314,17 @@ void Tetromino::rotate(string direction) {
 void Tetromino::drop() {  
 
 	updatePreviously();
+	vector<vector<int>> temp;
 
-	//update abscoords (check against currgrid's highest tile)
-	//shift all tetro's coords 1 down until at lowest possible
-	
-	int left_most = findLeftMost();
-	int right_most = findRightMost();
+	do { 
+		temp = absCoords;     
+		moveDown();
+	} while (temp != absCoords);
 
-	// find bottom-most pixel that is under current block 
-	int smallest_diff = currGrid.size();
-	int diff = 0;
-        bool start_count;
-	for (int i = left_most; i <= right_most; ++i) { // cols of current block
-		diff = 0;
-		start_count = false;
-		for (int j = currGrid.size() - 2; j >= 0; --j) { // rows of currGrid
-			if ((currGrid[i][j] == ' ') && (currGrid[i][j + 1] != ' ')) {
-				start_count = true;
-			}
-			if (start_count && (currGrid[i][j] == ' ')) {
-				++diff;
-			}
-			if (start_count && (currGrid[i][j] != ' ')) {
-				break;
-			}
-		}
-		if (diff < smallest_diff) {
-			smallest_diff = diff;
-		}
-	}
-
-	// shift block as down as possible
-	for (int i = 0; i < absCoords.size(); ++i) {
-		absCoords[i][1] = absCoords[i][1] - smallest_diff;
-	}
-	
 	isDropped = true;
 	notifyObservers(); 
 }
+
 
 Tetromino::~Tetromino() {}
 
