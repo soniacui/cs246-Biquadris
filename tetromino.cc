@@ -99,14 +99,13 @@ shared_ptr<TetrominoInfo> Tetromino::getTetroInfo() {
 
 shared_ptr<BoardInfo> Subject::getInfo() const { return nullptr; }
 
-// ***************isHeavy needs to be given a default value in the ctor
 void Tetromino::toggleHeavy() {
 	isHeavy = !(isHeavy);
 }
 
 
 // update previously
-void Tetromino::updatePreviously() { // *********** add to .h and uml
+void Tetromino::updatePreviously() {
 	for (int i = 0; i < absCoords.size(); ++i) {
 		previously[i][0] = absCoords[i][0];
 		previously[i][1] = absCoords[i][1];
@@ -114,7 +113,7 @@ void Tetromino::updatePreviously() { // *********** add to .h and uml
 }
 
 
-// moves a Tetromino piece 1 down // *************** add to .h and uml
+// moves a Tetromino piece 1 down 
 void Tetromino::moveDown() {
 	// find bottom-most pixel 
 	int bottom_max = 0;
@@ -291,19 +290,24 @@ void Tetromino::drop() {
 	}
 
 	// find bottom-most pixel that is under current block 
-	int bottom_max = currGrid.size() - 1;;
-	for (int i = 0; i < currGrid.size(); ++i) {  // rows of currGrid
-		for (int j = left_max; j <= right_max; ++j) {  // cols of current block
+	int smallest_diff = currGrid.size() - 1;
+	int diff = 0;
+	for (int i = left_max; i <= right_max; ++i) { // cols of current block
+		for (int j = 0; j < currGrid.size(); ++j) { // rows of currGrid
 			if (currGrid[i][j] != ' ') {
-				bottom_max = i;
+				++diff;
+			} else {
+				break;
 			}
-		
+		}
+		if (diff < smallest_diff) {
+			smallest_diff = diff;
 		}
 	}
 
 	// shift block as down as possible
 	for (int i = 0; i < absCoords.size(); ++i) {
-		absCoords[i][1] = currGrid.size() - absCoords[i][1] + bottom_max;
+		absCoords[i][1] = absCoords[i][1] - smallest_diff;
 	}	
 
 	notifyObservers();
