@@ -151,25 +151,37 @@ int Tetromino::findBottomMost() {
 void Tetromino::moveDown() {
 	int bottom_most = findBottomMost();
 
-	// check if the block can move down
-	if (bottom_most > 0) {
+	/*// check if the block can move down
+	if (bottom_most > 1) {
 	        cout << "CAN STILL MOVE DOWN" << endl;	
 		//check if block will collide with anything
-		        for (int i = 0; i < absCoords.size(); ++i) {
-                absCoords[i][1] = absCoords[i][1] - 1;
-        }
-/*
 		for (int i = 0; i < absCoords.size(); ++i) {
 			if (currGrid[absCoords[i][0]][absCoords[i][1] - 1] != ' ') {
 				return;
 			}
 		}
-		*/
 	}
+
 	// if "down" is a valid move, shift all y coords 1 down
-	//for (int i = 0; i < absCoords.size(); ++i) {
-	//	absCoords[i][1] = absCoords[i][1] - 1;
-	//}	
+	for (int i = 0; i < absCoords.size(); ++i) {
+		absCoords[i][1] = absCoords[i][1] - 1;
+	} */
+
+	if (bottom_most > 0) {
+		for (int i = 0; i < absCoords.size(); ++i) {
+			for (int j = 0; j < absCoords.size(); ++j) {
+				if ((currGrid[absCoords[i][0]][absCoords[i][1] - 1] == currGrid[absCoords[j][0]][absCoords[j][1]]) ||
+				    (currGrid[absCoords[i][0]][absCoords[i][1] - 1] != ' ')) {
+						return;
+					}	
+			}
+		}
+		// if "bottom" is a valid move, shift all y coords 1 down
+		for (int i = 0; i < absCoords.size(); ++i) {
+			absCoords[i][1] = absCoords[i][1] - 1;
+		}
+	}
+
 
 
 }
@@ -182,7 +194,7 @@ void Tetromino::move(string direction) { // move left/right
 	if (direction == "right") {
 		int right_most = findRightMost();
 	
-		// check if the block can move right
+		/*// check if the block can move right
 		if (right_most < currGrid[0].size() - 1) {
 			//check if block will collide with anything
 			for (int i = 0; i < absCoords.size(); ++i) {
@@ -190,30 +202,42 @@ void Tetromino::move(string direction) { // move left/right
 					return;
 				}
 			}
+		}*/
+		if (right_most < currGrid[0].size() - 1) {
+			for (int i = 0; i < absCoords.size(); ++i) {
+				for (int j = 0; j < absCoords.size(); ++j) {
+					if ((currGrid[absCoords[i][0] + 1][absCoords[i][1]] == currGrid[absCoords[j][0]][absCoords[j][1]]) ||
+					    (currGrid[absCoords[i][0] + 1][absCoords[i][1]] != ' ')) {
+							return;
+						}	
+				}
+			}
+			// if "right" is a valid move, shift all x coords 1 right
+			for (int i = 0; i < absCoords.size(); ++i) {
+				absCoords[i][0] = absCoords[i][0] + 1;
+			}
 		}
+		// for each shifted abscoords, if it collides with a non-abscoords grid pixel, or is outside of bounds, don't move it. otherwise, move it
  
-		// if "right" is a valid move, shift all x coords 1 right
-		for (int i = 0; i < absCoords.size(); ++i) {
-			absCoords[i][0] = absCoords[i][0] + 1;
-		}
 
 
 	} else if (direction == "left") { 
 
 		int left_most = findLeftMost();
 
-		// check if the block can move left
-		if (left_most > 0) { 
-			//check if block will collide with anything
+		if (left_most > 0) {
 			for (int i = 0; i < absCoords.size(); ++i) {
-				if (currGrid[absCoords[i][0] - 1][absCoords[i][1]] != ' ') {
-					return;
+				for (int j = 0; j < absCoords.size(); ++j) {
+					if ((currGrid[absCoords[i][0] - 1][absCoords[i][1]] == currGrid[absCoords[j][0]][absCoords[j][1]]) ||
+					    (currGrid[absCoords[i][0] - 1][absCoords[i][1]] != ' ')) {
+							return;
+						}	
 				}
 			}
-		}
-		// if "left" is a valid move, shift all x coords 1 left
-		for (int i = 0; i < absCoords.size(); ++i) {
-			absCoords[i][0] = absCoords[i][0] - 1;
+			// if "left" is a valid move, shift all x coords 1 right
+			for (int i = 0; i < absCoords.size(); ++i) {
+				absCoords[i][0] = absCoords[i][0] - 1;
+			}
 		}
 
 
@@ -232,7 +256,6 @@ void Tetromino::move(string direction) { // move left/right
 	notifyObservers();
 
 }
-
 void Tetromino::rotate(string direction) {
 
 	updatePreviously();
