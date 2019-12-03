@@ -28,32 +28,32 @@ Tetromino::Tetromino(vector<vector<char>> currGrid, int difficulty, char type) :
 }
 
 IBlock::IBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-	absCoords = vector<vector<int>> { vector<int>{0, 14}, vector<int>{0, 13}, vector<int>{0, 12}, vector<int>{0, 11} };
+    absCoords = { {0, 14}, {0, 13}, {0, 12}, {0, 11} };
 }
 IBlock::~IBlock() {}
 
 JBlock::JBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = vector<vector<int>>{ vector<int>{0, 14}, vector<int>{0, 13}, vector<int>{0, 12}, vector<int>{1, 14} };
+    absCoords = { {0, 14}, {0, 13}, {0, 12}, {1, 14} };
 }
 JBlock::~JBlock() {}
 
 LBlock::LBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = vector<vector<int>>{ vector<int>{0, 13}, vector<int>{1, 13}, vector<int>{2, 13}, vector<int>{2, 14} };
+    absCoords = { {0, 13}, {1, 13}, {2, 13}, {2, 14} };
 }
 LBlock::~LBlock() {}
 
 OBlock::OBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = vector<vector<int>>{ vector<int>{0, 14}, vector<int>{0, 13}, vector<int>{1, 14}, vector<int>{1, 13} };
+    absCoords = { {0, 14}, {0, 13}, {1, 14}, {1, 13} };
 }
 OBlock::~OBlock() {}
 
 SBlock::SBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = vector<vector<int>>{ vector<int>{0, 13}, vector<int>{1, 13}, vector<int>{1, 14}, vector<int>{2, 14} };
+    absCoords = { {0, 13}, {1, 13}, {1, 14}, {2, 14} };
 }
 SBlock::~SBlock() {}
 
 ZBlock::ZBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = vector<vector<int>>{ vector<int>{0, 14}, vector<int>{2, 13}, vector<int>{1, 14}, vector<int>{1, 13} };
+    absCoords = { {0, 14}, {1, 14}, {1, 13}, {2, 13} };
 }
 ZBlock::~ZBlock() {}
 
@@ -63,7 +63,7 @@ TBlock::TBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino
 TBlock::~TBlock() {}
 
 StarBlock::StarBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = vector<vector<int>>{ vector<int>{5, 14} };
+    absCoords = { {5, 14} };
 }
 StarBlock::~StarBlock() {}
 

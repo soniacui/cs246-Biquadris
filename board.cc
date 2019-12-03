@@ -377,6 +377,8 @@ void Board::notify(Subject &notifier) {
     else { //if caller is opponent board, only case is to suffer effect
 	if (bInfo->punishType != "")
         	sufferPunishment(bInfo->punishType);
+	else if (!bInfo->isTurn)
+		isTurn = true;
 	else
 		return;
     }
