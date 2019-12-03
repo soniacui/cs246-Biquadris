@@ -34,7 +34,7 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
 
 void Board::generateTetromino() {
     if (nextTetro == nullptr) {
-        currTetro = tetroFactory.generateTetromino();
+        currTetro = tetroFactory.generateTetromino(grid);
 	//cout << "following is tetro's" << endl;
         currTetro->attach(this); //set this board as observer to the tetro
         tetrominoes.emplace_back(currTetro); //save a pointer to all tetrominoes generated in tetrominoes
@@ -45,9 +45,16 @@ void Board::generateTetromino() {
         currTetro->attach(this); //set this board as observer to the tetro
         tetrominoes.emplace_back(nextTetro); //put the next tetromino onto list of tetrominoes ptrs
         attach(nextTetro); //put next tetromino as an observer
+        currTetro->updateGrid(grid);
     }
-
-    nextTetro = tetroFactory.generateTetromino(); //make new next tetromino
+    shared_ptr<TetrominoInfo>initInfo = currTetro->getTetroInfo();
+    cout << initInfo->absCoords.size() << endl;
+    cout << initInfo->type << endl;
+    for (int i = 0; i < initInfo->absCoords.size(); i++) {
+	    cout << initInfo->absCoords[i][1] << ", " << initInfo->absCoords[i][0] << endl;
+        grid[initInfo->absCoords[i][1]][initInfo->absCoords[i][0]] = '@';
+    }
+    nextTetro = tetroFactory.generateTetromino(grid); //make new next tetromino
 }
 
 bool Board::checkDropped(TetrominoInfo tetroInfo) const {
@@ -150,6 +157,7 @@ bool Board::isGameOver(TetrominoInfo newest) {
 void Board::performAction(string action, string newPath) { //handles input as a distinct unique string, calls action on current block
     if (action == "left" || action == "right" || action == "down") {
         if (!menu)
+		cout << "aaaaaaaaaa" << endl;
             currTetro->move(action);
     }
     else if (action == "clockwise" || action == "counterclockwise") {
@@ -247,7 +255,7 @@ void Board::sufferPunishment(string effect) {
         isBlind = true;
     else if (effect == "I") {
         deleteTetro(currTetro); //removes current tetro off the grid
-        currTetro = tetroFactory.forceGenerate("I"); //make a specific tetro as current
+        currTetro = tetroFactory.forceGenerate(grid, "I"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
@@ -256,7 +264,7 @@ void Board::sufferPunishment(string effect) {
     }
     else if (effect == "J") {
         deleteTetro(currTetro); //removes current tetro off the grid
-        currTetro = tetroFactory.forceGenerate("J"); //make a specific tetro as current
+        currTetro = tetroFactory.forceGenerate(grid, "J"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
@@ -265,7 +273,7 @@ void Board::sufferPunishment(string effect) {
     }
     else if (effect == "L") {
         deleteTetro(currTetro); //removes current tetro off the grid
-        currTetro = tetroFactory.forceGenerate("L"); //make a specific tetro as current
+        currTetro = tetroFactory.forceGenerate(grid, "L"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
@@ -274,7 +282,7 @@ void Board::sufferPunishment(string effect) {
     }
     else if (effect == "O") {
         deleteTetro(currTetro); //removes current tetro off the grid
-        currTetro = tetroFactory.forceGenerate("O"); //make a specific tetro as current
+        currTetro = tetroFactory.forceGenerate(grid, "O"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
@@ -283,7 +291,7 @@ void Board::sufferPunishment(string effect) {
     }
     else if (effect == "S") {
         deleteTetro(currTetro); //removes current tetro off the grid
-        currTetro = tetroFactory.forceGenerate("S"); //make a specific tetro as current
+        currTetro = tetroFactory.forceGenerate(grid, "S"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
@@ -292,7 +300,7 @@ void Board::sufferPunishment(string effect) {
     }
     else if (effect == "Z") {
         deleteTetro(currTetro); //removes current tetro off the grid
-        currTetro = tetroFactory.forceGenerate("Z"); //make a specific tetro as current
+        currTetro = tetroFactory.forceGenerate(grid, "Z"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
@@ -301,7 +309,7 @@ void Board::sufferPunishment(string effect) {
     }
     else if (effect == "T") {
         deleteTetro(currTetro); //removes current tetro off the grid
-        currTetro = tetroFactory.forceGenerate("T"); //make a specific tetro as current
+        currTetro = tetroFactory.forceGenerate(grid, "T"); //make a specific tetro as current
         currTetro->attach(this); //set this board as observer to the tetro
         remove(); //delete previous current in observers and tetrominoes
         tetrominoes.pop_back();
@@ -311,7 +319,7 @@ void Board::sufferPunishment(string effect) {
     else if (effect == "*") {
         //currTetro does not change, this is a strict add-on
 
-        Tetromino *specialTetro = tetroFactory.forceGenerate("*"); //make a specific tetro *
+        Tetromino *specialTetro = tetroFactory.forceGenerate(grid, "*"); //make a specific tetro *
         specialTetro->attach(this); //set this board as observer to the tetro
 
         //nothing is popped off since this is a strict addition
@@ -327,6 +335,7 @@ void Board::sufferPunishment(string effect) {
 
 void Board::notify(Subject &notifier) {
     Info *info = notifier.getTetroInfo().get(); //get relevant information from caller
+    cout << "bbbbbbbbbb" << endl;
     if (info->infoType == "tetromino") { //if caller is a tetromino
         TetrominoInfo *castedInfo = static_cast<TetrominoInfo *>(info);
         if (castedInfo->isDeleted) { //case for tetromino has been removed from board
@@ -336,13 +345,16 @@ void Board::notify(Subject &notifier) {
                 Board::highScore = score;
         }
         else { //handling tetromino representation on internal grid
+		cout << "dddddddd" << endl;
             if (castedInfo->previously.size() == 0) { //newly instantiated
+		    cout << "eeeeeeee" << endl;
                 if (isGameOver(*castedInfo)) {
                     hasLost = true;
                     notifyObservers(); //display ending screen
                 }
             }
             else { //a move done to an existing nondropped tetromino
+		    cout << "ffffffff" << endl;
                 for (int i = 0; i < castedInfo->absCoords.size(); i++) {
                     grid[castedInfo->previously[i][1]][castedInfo->previously[i][0]] = ' '; //fill old location
                     grid[castedInfo->absCoords[i][1]][castedInfo->absCoords[i][0]] = castedInfo->type; //new location
@@ -371,7 +383,8 @@ shared_ptr<BoardInfo> Board::getInfo() const {
             }
         }
     }
-    shared_ptr<BoardInfo> bInfo{ new BoardInfo(displayGrid, currPunish, playerID, deletedRow, nextTetro, isTurn, menu, hasLost, "board") };
+
+    shared_ptr<BoardInfo> bInfo{ new BoardInfo(displayGrid, currPunish, difficulty, score, playerID, deletedRow, nextTetro, isTurn, menu, hasLost, "board") };
     return bInfo;
 }
 

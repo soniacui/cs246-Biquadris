@@ -9,38 +9,39 @@ using namespace std;
 //Constructor for textDisplay
 TextDisplay::TextDisplay(){
 
-	bool isMenu = false;
-	int boardSizeX = 11;
-	int boardSizeY = 15;
+	isMenu = false;
+	boardSizeX = 11;
+	boardSizeY = 15;
 	gridP1 = vector<vector<char>> (boardSizeY, vector<char> (boardSizeX, ' '));
 	gridP2 = vector<vector<char>> (boardSizeY, vector<char> (boardSizeX, ' '));
     nextPieceP1 = 'l';
     nextPieceP2 = 'l';
+    isInit1, isInit2 = false;
 }
 
 void TextDisplay::notify(Subject &notifier){
-
 	isMenu = notifier.getInfo()->menu;
-
 if (notifier.getInfo()->playerID == 1) {
-
 	gridP1 = notifier.getInfo()->grid;
 	nextPieceP1 = notifier.getInfo()->nextTetro->getType();
 	levelP1 = notifier.getInfo()->difficulty;
-	scoreP1 = notifier.getInfo()->difficulty;
+	scoreP1 = notifier.getInfo()->score;
 	hasLostP1 = notifier.getInfo()->hasLost;
-    playerID = notifier.getInfo()->playerID;
+	playerID = notifier.getInfo()->playerID;
+	isInit1 = true;
 }
 else if (notifier.getInfo()->playerID == 2) {
 	
 	gridP2 = notifier.getInfo()->grid;
 	nextPieceP2 = notifier.getInfo()->nextTetro->getType();
 	levelP2 = notifier.getInfo()->difficulty;
-	scoreP2 = notifier.getInfo()->difficulty;
+	scoreP2 = notifier.getInfo()->score;
 	hasLostP2 = notifier.getInfo()->hasLost;
-    playerID = notifier.getInfo()->playerID;
+	playerID = notifier.getInfo()->playerID;
+	isInit2 = true;
 }
-
+if (isInit1 && isInit2)
+	cout << *this << endl;
 }
 
 ostream &operator<<(std::ostream &out, const TextDisplay &td)
@@ -55,8 +56,8 @@ ostream &operator<<(std::ostream &out, const TextDisplay &td)
 	}
 	else {
 	//Prints top half of Game UI
-	out << "Level:  " << td.levelP1 << "/t/t Level:  " << td.levelP2 << endl;
-	out << "Score:  " << td.scoreP1 << "/t/t Score:  " << td.scoreP2 << endl;
+	out << "Level:  " << td.levelP1 << "\t\t Level:  " << td.levelP2 << endl;
+	out << "Score:  " << td.scoreP1 << "\t\t Score:  " << td.scoreP2 << endl;
 	out << "--------------------------------------------------" << endl;
 	
 	//Prints playing field
@@ -64,7 +65,7 @@ ostream &operator<<(std::ostream &out, const TextDisplay &td)
 		for (int x = 0; x < td.boardSizeX; x++){
 			out << td.gridP1[x][y];
 		}
-		out << " /t/t ";
+		out << " \t\t ";
 		for (int x = 0; x < td.boardSizeX; x++){
 			out << td.gridP2[x][y];
 		}
@@ -77,7 +78,7 @@ ostream &operator<<(std::ostream &out, const TextDisplay &td)
 	out << "Next: " << td.nextPieceP1 << endl;
 	}
 	else if (td.playerID == 2){
-	out << "/t/t/t Next: " << td.nextPieceP2 << endl;
+	out << "\t\t\t Next: " << td.nextPieceP2 << endl;
 	}
 	
 

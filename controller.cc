@@ -27,7 +27,7 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
         s = "";
         cmd = "";
         c = 0;
-        multiplier = 0;
+        multiplier = 1;
 	// command list
         vector<string> commands = {"left", "right", "down", "clockwise", "counterclockwise",
                              "drop", "levelup", "leveldown", "norandom", "random", 
@@ -210,7 +210,7 @@ void Controller::matchCmd(string s) {
 		multAction(1, "force" + type);
 	   }
      //}
-        cout << *static_cast<TextDisplay *>(display) << endl;
+        //cout << *static_cast<TextDisplay *>(display) << endl;
         //if (checkGameOver()) {  // if game over, instant restart?
 	//	multAction(1, "restart");
    	//}
@@ -272,6 +272,7 @@ void Controller::multAction(int multiplier, string action, string file) {
 		//move/rotate/drop/force
 		for (int i = 0; i < multiplier; ++i) {
 			if (b1->isTurn) {
+				cout << "calling action" << endl;
 				b1->performAction(action);
 				if (!b1->isTurn) {
 					break;

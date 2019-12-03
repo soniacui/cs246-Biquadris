@@ -6,9 +6,9 @@
 
 class Tetromino:public Subject, public Observer{
     protected:
-        char type;
 	    int speed;
 	    int value;
+	    char type;
 	    bool isDeleted;
         bool isDropped;
 		bool isHeavy;
@@ -16,7 +16,7 @@ class Tetromino:public Subject, public Observer{
 		std::vector<std::vector<int>> absCoords;
 		std::vector<std::vector<char>> currGrid;
     public:
-	    Tetromino(int difficulty, char type);
+	    Tetromino(std::vector<std::vector<char>> currGrid, int difficulty, char type);
 	    void move(std::string direction);
 	    void rotate(std::string direction); //notifyObservers called upon every state change (includes move, rotate, drop, and instances of notify)
 	    void drop();
@@ -27,54 +27,55 @@ class Tetromino:public Subject, public Observer{
 	    void toggleHeavy();
 	    void updatePreviously();
 	    void moveDown();
+        void updateGrid(std::vector<std::vector<char>> grid);
         char getType();
 };
 
 class IBlock:public Tetromino{
     public:
-        IBlock(int difficulty, char type = 'I');
+        IBlock(std::vector<std::vector<char>> grid, int difficulty, char type = 'I');
 	    ~IBlock() override;
 };
 
 class JBlock:public Tetromino{
     public:
-        JBlock(int difficulty, char type = 'J');
+        JBlock(std::vector<std::vector<char>> grid, int difficulty, char type = 'J');
         ~JBlock() override;
 };
 
 class LBlock:public Tetromino{
     public:
-        LBlock(int difficulty, char type = 'L');
+        LBlock(std::vector<std::vector<char>> grid, int difficulty, char type = 'L');
         ~LBlock() override;
 };
 
 class OBlock:public Tetromino{
     public:
-        OBlock(int difficulty, char type = 'O');
+        OBlock(std::vector<std::vector<char>> grid, int difficulty, char type = 'O');
         ~OBlock() override;
 };
 
 class SBlock:public Tetromino{
     public:
-        SBlock(int difficulty, char type = 'S');
+        SBlock(std::vector<std::vector<char>> grid, int difficulty, char type = 'S');
         ~SBlock() override;
 };
 
 class ZBlock:public Tetromino{
     public:
-        ZBlock(int difficulty, char type = 'Z');
+        ZBlock(std::vector<std::vector<char>> grid, int difficulty, char type = 'Z');
         ~ZBlock() override;
 };
 
 class TBlock:public Tetromino{
     public:
-        TBlock(int difficulty, char type = 'T');
+        TBlock(std::vector<std::vector<char>> grid, int difficulty, char type = 'T');
         ~TBlock() override;
 };
 
 class StarBlock:public Tetromino{
     public:
-        StarBlock(int difficulty, char type = '*');
+        StarBlock(std::vector<std::vector<char>> grid, int difficulty, char type = '*');
         ~StarBlock() override;
 };
 

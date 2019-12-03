@@ -10,37 +10,60 @@ char Tetromino::getType() {
     return type;
 }
 
-Tetromino::Tetromino(int difficulty, char type) : value{ difficulty }, type{ type } {
+void Tetromino::updateGrid(vector<vector<char>> grid) {
+    currGrid = grid;
+}
+
+Tetromino::Tetromino(vector<vector<char>> currGrid, int difficulty, char type) : currGrid{ currGrid }, value { difficulty }, type{ type } {
     if (difficulty == 3 || difficulty == 4) {
         speed = 1;
     }
     else {
         speed = 0;
     }
+    isDeleted = false;
+    isDropped = false;
+    isHeavy = false;
 }
 
-IBlock::IBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+IBlock::IBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
+	absCoords = vector<vector<int>> { vector<int>{0, 14}, vector<int>{0, 13}, vector<int>{0, 12}, vector<int>{0, 11} };
+}
 IBlock::~IBlock() {}
 
-JBlock::JBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+JBlock::JBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
+    absCoords = vector<vector<int>>{ vector<int>{0, 14}, vector<int>{0, 13}, vector<int>{0, 12}, vector<int>{1, 14} };
+}
 JBlock::~JBlock() {}
 
-LBlock::LBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+LBlock::LBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
+    absCoords = vector<vector<int>>{ vector<int>{0, 13}, vector<int>{1, 13}, vector<int>{2, 13}, vector<int>{2, 14} };
+}
 LBlock::~LBlock() {}
 
-OBlock::OBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+OBlock::OBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
+    absCoords = vector<vector<int>>{ vector<int>{0, 14}, vector<int>{0, 13}, vector<int>{1, 14}, vector<int>{1, 13} };
+}
 OBlock::~OBlock() {}
 
-SBlock::SBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+SBlock::SBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
+    absCoords = vector<vector<int>>{ vector<int>{0, 13}, vector<int>{1, 13}, vector<int>{1, 14}, vector<int>{2, 14} };
+}
 SBlock::~SBlock() {}
 
-ZBlock::ZBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+ZBlock::ZBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
+    absCoords = vector<vector<int>>{ vector<int>{0, 14}, vector<int>{2, 13}, vector<int>{1, 14}, vector<int>{1, 13} };
+}
 ZBlock::~ZBlock() {}
 
-TBlock::TBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+TBlock::TBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
+    absCoords = { {1, 1}, {2, 2}, {3, 3}, {4, 4} };
+}
 TBlock::~TBlock() {}
 
-StarBlock::StarBlock(int difficulty, char type) : Tetromino(difficulty, type) {}
+StarBlock::StarBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
+    absCoords = vector<vector<int>>{ vector<int>{5, 14} };
+}
 StarBlock::~StarBlock() {}
 
 void Tetromino::notify(Subject &notifier) {
@@ -68,6 +91,7 @@ void Tetromino::notify(Subject &notifier) {
 
 shared_ptr<TetrominoInfo> Tetromino::getTetroInfo() {
     shared_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, speed, isDropped, isDeleted, isHeavy) };
+    cout << "ASDASDASDAS" << tInfo->absCoords[0][0] << endl;
     return tInfo;
 }
 
@@ -113,7 +137,7 @@ void Tetromino::moveDown() {
 void Tetromino::move(string direction) { // move left/right
 
 	updatePreviously();
-
+	cout << "cccccccc" << previously.size() << endl;
 	if (direction == "right") {
 
 		// find right-most pixel 

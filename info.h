@@ -22,7 +22,7 @@ struct BoardInfo:public Info{
     bool isTurn;
     bool menu;
     bool hasLost;
-	BoardInfo(std::vector<std::vector<char>> &grid, std::string punishType, int playerID, int deletedRow, Tetromino *nextTetro, bool isTurn, bool menu, bool hasLost, std::string infoType); //specify that infoType is board
+	BoardInfo(std::vector<std::vector<char>> &grid, std::string punishType, int difficulty, int score, int playerID, int deletedRow, Tetromino *nextTetro, bool isTurn, bool menu, bool hasLost, std::string infoType); //specify that infoType is board
     ~BoardInfo() override;
 };
 
