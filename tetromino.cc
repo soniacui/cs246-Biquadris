@@ -24,6 +24,7 @@ Tetromino::Tetromino(vector<vector<char>> currGrid, int difficulty, char type) :
     isDeleted = false;
     isDropped = false;
     isHeavy = false;
+    previously = vector<vector<int>>(4, vector<int>(2, -1));
 }
 
 IBlock::IBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
@@ -57,7 +58,7 @@ ZBlock::ZBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino
 ZBlock::~ZBlock() {}
 
 TBlock::TBlock(vector<vector<char>> grid, int difficulty, char type) : Tetromino(grid, difficulty, type) {
-    absCoords = { {1, 1}, {2, 2}, {3, 3}, {4, 4} };
+    absCoords = { {0, 14}, {1, 14}, {2, 14}, {1, 13} };
 }
 TBlock::~TBlock() {}
 
@@ -67,7 +68,8 @@ StarBlock::StarBlock(vector<vector<char>> grid, int difficulty, char type) : Tet
 StarBlock::~StarBlock() {}
 
 void Tetromino::notify(Subject &notifier) {
-    BoardInfo *bInfo = notifier.getInfo().get(); //all its observers' getInfo() return type BoardInfo
+    shared_ptr<BoardInfo> bInfo = notifier.getInfo(); //all its observers' getInfo() return type BoardInfo
+    cout << "looping" << endl;
     if (bInfo->deletedRow != -1) { //case that the board had deleted a row, must update absCoords
         if (isDeleted) //if already deleted, no new points awarded
             return;
@@ -123,10 +125,11 @@ void Tetromino::moveDown() {
 	}
 
 	// check if the block can move down
-	if (bottom_max > 0) { 
+	if (bottom_max > 1) {
+	      cout << "CAN STILL MOVE DOWN" << endl;	
 		// if "down" is a valid move, shift all y coords 1 down
 		for (int i = 0; i < absCoords.size(); ++i) {
-			absCoords[i][1] = absCoords[i][0] - 1;
+			absCoords[i][1] = absCoords[i][1] - 1;
 		}	
 
 	}
@@ -135,7 +138,7 @@ void Tetromino::moveDown() {
 
 //notifyObservers called upon every state change (includes move, rotate, drop, and instances of notify)
 void Tetromino::move(string direction) { // move left/right
-
+	cout << "b.5555555555" << endl;
 	updatePreviously();
 	cout << "cccccccc" << previously.size() << endl;
 	if (direction == "right") {

@@ -214,9 +214,8 @@ void Controller::matchCmd(string s) {
         //if (checkGameOver()) {  // if game over, instant restart?
 	//	multAction(1, "restart");
    	//}
-
-    }
-   
+	multiplier = 1;
+    } 
     catch (int e) {
         cout << "Unrecognized command. Please try again." << endl;
     }

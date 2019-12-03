@@ -61,12 +61,12 @@ ostream &operator<<(std::ostream &out, const TextDisplay &td)
 	out << "--------------------------------------------------" << endl;
 	
 	//Prints playing field
-	for (int y = 0; y < td.boardSizeY; y++){
-		for (int x = 0; x < td.boardSizeX; x++){
+	for (int x = td.boardSizeY - 1; x >= 0; x--){
+		for (int y = 0; y < td.boardSizeX; y++){
 			out << td.gridP1[x][y];
 		}
 		out << " \t\t ";
-		for (int x = 0; x < td.boardSizeX; x++){
+		for (int y = 0; y < td.boardSizeX; y++){
 			out << td.gridP2[x][y];
 		}
 		out << endl;
