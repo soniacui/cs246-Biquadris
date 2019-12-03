@@ -20,9 +20,9 @@ class Tetromino:public Subject, public Observer{
 	    void move(std::string direction);
 	    void rotate(std::string direction); //notifyObservers called upon every state change (includes move, rotate, drop, and instances of notify)
 	    void drop();
-	   void findLeftMost();
-		void findRightMost();
-		void findBottomMost();
+	   int findLeftMost();
+		int findRightMost();
+		int findBottomMost();
         void increaseSpeed(int increase);
 	std::shared_ptr<TetrominoInfo> getTetroInfo() override;
 	    void notify(Subject &notifier) override; //cares only about when toDelete is not empty

@@ -233,14 +233,13 @@ void Tetromino::rotate(string direction) {
 	if (direction == "clockwise") {
 
 		vector<vector<int>> check = absCoords; // a "trial" vector to see if the rotate is valid
+		int left_most = findLeftMost();        //find left most before shifting
+                int bottom_most = findBottomMost();     //find bottom most before shifting
 
 		// shift trial vector to origin, and rotate clockwise
 		for (int i = 0; i < check.size(); ++i) {
-			check.emplace_back({absCoords[i][1] - bottom_most, -(absCoords[i][0] - left_most)}); 
+			check.emplace_back(vector<int>{absCoords[i][1] - bottom_most, -(absCoords[i][0] - left_most)});
 		}
-
-		int left_most = findLeftMost();        //find left most before shifting
-	        int bottom_most = findBottomMost();     //find bottom most before shifting
 
 		// find right-most pixel after rotating
 		int new_left_most = currGrid[0].size() - 1;
@@ -271,16 +270,15 @@ void Tetromino::rotate(string direction) {
 
 	} else if (direction == "counterclockwise") {
 		vector<vector<int>> check = absCoords; // a "trial" vector to see if the rotate is valid
-
+                int left_most = findLeftMost();        //find left most before shifting
+                int bottom_most = findBottomMost();     //find bottom most before shifting
 		// shift trial vector to origin, and rotate clockwise
 		for (int i = 0; i < check.size(); ++i) {
-			check.emplace_back({-(absCoords[i][1] - bottom_most), absCoords[i][0] - left_most}); 
+			check.emplace_back(vector<int>{-(absCoords[i][1] - bottom_most), absCoords[i][0] - left_most}); 
 		}
 
-		int left_most = findLeftMost();        //find left most before shifting
-	        int bottom_most = findBottomMost();     //find bottom most before shifting
 
-		// find right-most pixel after rotating
+		// find right-most pixel after rotatingi
 		int new_left_most = currGrid[0].size() - 1;
 		for (int i = 0; i < check.size(); ++i) {
 			if (check[i][0] > new_left_most) {
