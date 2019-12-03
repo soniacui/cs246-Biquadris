@@ -114,9 +114,10 @@ void Board::clearLine() {
             currPunish = ""; //reset intent to punish
         }
     }
-    score += difficulty + (linesCleared * linesCleared); //score increased for clearing lines
     if (linesCleared == 0) //if this step did not clear anything, increase counter
         sinceLastClear++;
+    else
+        score += difficulty + (linesCleared * linesCleared); //score increased for clearing lines
     if (sinceLastClear == 5) {
         sinceLastClear = 0;
         if (difficulty == 4)
@@ -150,7 +151,10 @@ void Board::restart() {
 }
 
 void Board::toggleRandom(string newPath) {
-    tetroFactory = LevelData(difficulty, newPath); //make new factory with requested randomness
+    if (difficulty == 3 || difficulty == 4 && !menu) {
+        tetroFactory = LevelData(difficulty, newPath); //remake factory with path to sequence with requested randomness
+    }
+    notifyObservers();
 }
 
 bool Board::isGameOver(TetrominoInfo newest) {
@@ -162,6 +166,7 @@ bool Board::isGameOver(TetrominoInfo newest) {
 }
 
 void Board::performAction(string action, string newPath) { //handles input as a distinct unique string, calls action on current block
+    cout << "IN ACTION SELECTION" << endl;
     if (action == "left" || action == "right" || action == "down") {
         if (!menu)
 		cout << "aaaaaaaaaa" << endl;
@@ -180,22 +185,14 @@ void Board::performAction(string action, string newPath) { //handles input as a 
             difficulty++;
             tetroFactory = LevelData(difficulty, path, seed); //make new factory for blocks
         }
+        notifyObservers();
     }
     else if (action == "leveldown") {
         if (difficulty != 0 && !menu) {
             difficulty--;
             tetroFactory = LevelData(difficulty, path, seed); //make new factory for blocks
         }
-    }
-    else if (action == "random") {
-        if (difficulty == 3 || difficulty == 4 && !menu) {
-            tetroFactory = LevelData(difficulty); //remake factory guarenteed random
-        }
-    }
-    else if (action == "norandom") {
-        if (difficulty == 3 || difficulty == 4 && !menu) {
-            tetroFactory = LevelData(difficulty, newPath); //remake factory with path to sequence
-        }
+        notifyObservers();
     }
     else if (action == "blind") {
         if (menu) { //if currently prompting user to choose effect
@@ -423,7 +420,7 @@ void Board::notify(Subject &notifier) {
     else { //if caller is opponent board, only case is to suffer effect
 	if (bInfo->punishType != "")
         	sufferPunishment(bInfo->punishType);
-	else if (!bInfo->isTurn)
+	else if (!bInfo->isTurn && currPunish == "")
 		isTurn = true;
 	else
 		return;
