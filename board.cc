@@ -57,6 +57,11 @@ void Board::generateTetromino() {
         attach(nextTetro); //put next tetromino as an observer
         currTetro->updateGrid(grid);
     }
+    if (isGameOver(*currTetro->getTetroInfo())) {
+        hasLost = true;
+        drawToGrid(currTetro);
+        notifyObservers(); //display ending screen
+    }
     drawToGrid(currTetro);
     nextTetro = tetroFactory.generateTetromino(grid); //make new next tetromino
 }
@@ -297,6 +302,11 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        if (isGameOver(*currTetro->getTetroInfo())) {
+            hasLost = true;
+            drawToGrid(currTetro);
+            notifyObservers(); //display ending screen
+        }
         drawToGrid(currTetro);
     }
     else if (effect == "J") {
@@ -307,6 +317,11 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        if (isGameOver(*currTetro->getTetroInfo())) {
+            hasLost = true;
+            drawToGrid(currTetro);
+            notifyObservers(); //display ending screen
+        }
         drawToGrid(currTetro);
     }
     else if (effect == "L") {
@@ -318,6 +333,11 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        if (isGameOver(*currTetro->getTetroInfo())) {
+            hasLost = true;
+            drawToGrid(currTetro);
+            notifyObservers(); //display ending screen
+        }
         drawToGrid(currTetro);
     }
     else if (effect == "O") {
@@ -328,6 +348,11 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        if (isGameOver(*currTetro->getTetroInfo())) {
+            hasLost = true;
+            drawToGrid(currTetro);
+            notifyObservers(); //display ending screen
+        }
         drawToGrid(currTetro);
     }
     else if (effect == "S") {
@@ -338,6 +363,11 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        if (isGameOver(*currTetro->getTetroInfo())) {
+            hasLost = true;
+            drawToGrid(currTetro);
+            notifyObservers(); //display ending screen
+        }
         drawToGrid(currTetro);
     }
     else if (effect == "Z") {
@@ -348,6 +378,11 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        if (isGameOver(*currTetro->getTetroInfo())) {
+            hasLost = true;
+            drawToGrid(currTetro);
+            notifyObservers(); //display ending screen
+        }
         drawToGrid(currTetro);
     }
     else if (effect == "T") {
@@ -358,6 +393,11 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        if (isGameOver(*currTetro->getTetroInfo())) {
+            hasLost = true;
+            drawToGrid(currTetro);
+            notifyObservers(); //display ending screen
+        }
         drawToGrid(currTetro);
     }
     else if (effect == "*") {
@@ -369,6 +409,11 @@ void Board::sufferPunishment(string effect) {
         //nothing is popped off since this is a strict addition
 
         attach(specialTetro); //add starTetromino to observers (award potential points), not added to tetrominoes since it cannot be forced
+        if (isGameOver(*specialTetro->getTetroInfo())) {
+            hasLost = true;
+            drawToGrid(specialTetro);
+            notifyObservers(); //display ending screen
+        }
         specialTetro->drop(); //this immediately drops the starBlock
     }
     else if (effect == "heavy")
@@ -392,38 +437,29 @@ void Board::notify(Subject &notifier) {
                 Board::highScore = score;
         }
         else { //handling tetromino representation on internal grid
-		cout << "dddddddd" << endl;
-            if (tInfo->previously.size() == 0) { //newly instantiated
-		    cout << "eeeeeeee" << endl;
-                if (isGameOver(*tInfo)) {
-                    hasLost = true;
-                    notifyObservers(); //display ending screen
-                }
-            }
-            else { //a move done to an existing nondropped tetromino
-		    cout << "ffffffff" << endl;
+		    cout << "dddddddd" << endl;
+            //a move done to an existing nondropped tetromino
 		    cout << tInfo->absCoords.size() << endl;
 		    cout << "f.5555555" << endl;
-		for (int i = 0; i < tInfo->absCoords.size(); i++) {
-			cout << tInfo->absCoords[i][0]  << ", " << tInfo->absCoords[i][1] << endl;
-		    grid[tInfo->previously[i][1]][tInfo->previously[i][0]] = ' '; //fill old location
-		}
-                for (int i = 0; i < tInfo->absCoords.size(); i++) {
-                    grid[tInfo->absCoords[i][1]][tInfo->absCoords[i][0]] = tInfo->type; //new location
-                }
-		cout << "gggggggggggg" << endl;
-                if (checkDropped(*tInfo)) //check if the tetromino has dropped to the bottom
-                    clearLine(); //complete end of turn actions, add points clear lines etc.
+		    for (int i = 0; i < tInfo->absCoords.size(); i++) {
+			    cout << tInfo->absCoords[i][0]  << ", " << tInfo->absCoords[i][1] << endl;
+		        grid[tInfo->previously[i][1]][tInfo->previously[i][0]] = ' '; //fill old location
             }
+            for (int i = 0; i < tInfo->absCoords.size(); i++) {
+                grid[tInfo->absCoords[i][1]][tInfo->absCoords[i][0]] = tInfo->type; //new location
+            }
+		    cout << "gggggggggggg" << endl;
+            if (checkDropped(*tInfo)) //check if the tetromino has dropped to the bottom
+                clearLine(); //complete end of turn actions, add points clear lines etc.
         }
     }
     else { //if caller is opponent board, only case is to suffer effect
-	if (bInfo->punishType != "")
-        	sufferPunishment(bInfo->punishType);
-	else if (!bInfo->isTurn && currPunish == "")
-		isTurn = true;
-	else
-		return;
+	    if (bInfo->punishType != "")
+        	    sufferPunishment(bInfo->punishType);
+	    else if (!bInfo->isTurn && currPunish == "")
+		    isTurn = true;
+	    else
+		    return;
     }
     notifyObservers(); //relay message to observers, namely the displays
 }
