@@ -32,6 +32,16 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
     //cout << playerID << observers.size() << currTetro->observers.size() << endl;
 }
 
+void Board::drawToGrid(Tetromino *currTetro) {
+    shared_ptr<TetrominoInfo>initInfo = currTetro->getTetroInfo();
+    cout << initInfo->absCoords.size() << endl;
+    cout << initInfo->type << endl;
+    for (int i = 0; i < initInfo->absCoords.size(); i++) {
+        cout << initInfo->absCoords[i][1] << ", " << initInfo->absCoords[i][0] << endl;
+        grid[initInfo->absCoords[i][1]][initInfo->absCoords[i][0]] = initInfo->type;
+    }
+}
+
 void Board::generateTetromino() {
     if (nextTetro == nullptr) {
         currTetro = tetroFactory.generateTetromino(grid);
@@ -47,13 +57,7 @@ void Board::generateTetromino() {
         attach(nextTetro); //put next tetromino as an observer
         currTetro->updateGrid(grid);
     }
-    shared_ptr<TetrominoInfo>initInfo = currTetro->getTetroInfo();
-    cout << initInfo->absCoords.size() << endl;
-    cout << initInfo->type << endl;
-    for (int i = 0; i < initInfo->absCoords.size(); i++) {
-	    cout << initInfo->absCoords[i][1] << ", " << initInfo->absCoords[i][0] << endl;
-        grid[initInfo->absCoords[i][1]][initInfo->absCoords[i][0]] = initInfo->type;
-    }
+    drawToGrid(currTetro);
     nextTetro = tetroFactory.generateTetromino(grid); //make new next tetromino
 }
 
@@ -296,6 +300,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        drawToGrid(currTetro);
     }
     else if (effect == "J") {
         deleteTetro(currTetro); //removes current tetro off the grid
@@ -305,6 +310,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        drawToGrid(currTetro);
     }
     else if (effect == "L") {
 	    cout << "11111" << endl;
@@ -315,6 +321,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        drawToGrid(currTetro);
     }
     else if (effect == "O") {
         deleteTetro(currTetro); //removes current tetro off the grid
@@ -324,6 +331,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        drawToGrid(currTetro);
     }
     else if (effect == "S") {
         deleteTetro(currTetro); //removes current tetro off the grid
@@ -333,6 +341,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        drawToGrid(currTetro);
     }
     else if (effect == "Z") {
         deleteTetro(currTetro); //removes current tetro off the grid
@@ -342,6 +351,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        drawToGrid(currTetro);
     }
     else if (effect == "T") {
         deleteTetro(currTetro); //removes current tetro off the grid
@@ -351,6 +361,7 @@ void Board::sufferPunishment(string effect) {
         tetrominoes.pop_back();
         attach(currTetro); //replace with new current in both observers and tetrominoes
         tetrominoes.emplace_back(currTetro);
+        drawToGrid(currTetro);
     }
     else if (effect == "*") {
         //currTetro does not change, this is a strict add-on

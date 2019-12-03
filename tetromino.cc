@@ -68,6 +68,8 @@ StarBlock::StarBlock(vector<vector<char>> grid, int difficulty, char type) : Tet
 StarBlock::~StarBlock() {}
 
 void Tetromino::notify(Subject &notifier) {
+	if (popped)
+		return;
     shared_ptr<BoardInfo> bInfo = notifier.getInfo(); //all its observers' getInfo() return type BoardInfo
     cout << "looping" << endl;
     if (bInfo->deletedRow != -1) { //case that the board had deleted a row, must update absCoords
@@ -150,19 +152,24 @@ void Tetromino::moveDown() {
 	int bottom_most = findBottomMost();
 
 	// check if the block can move down
-	if (bottom_most > 1) {
+	if (bottom_most > 0) {
 	        cout << "CAN STILL MOVE DOWN" << endl;	
 		//check if block will collide with anything
+		        for (int i = 0; i < absCoords.size(); ++i) {
+                absCoords[i][1] = absCoords[i][1] - 1;
+        }
+/*
 		for (int i = 0; i < absCoords.size(); ++i) {
 			if (currGrid[absCoords[i][0]][absCoords[i][1] - 1] != ' ') {
 				return;
 			}
 		}
+		*/
 	}
 	// if "down" is a valid move, shift all y coords 1 down
-	for (int i = 0; i < absCoords.size(); ++i) {
-		absCoords[i][1] = absCoords[i][1] - 1;
-	}	
+	//for (int i = 0; i < absCoords.size(); ++i) {
+	//	absCoords[i][1] = absCoords[i][1] - 1;
+	//}	
 
 
 }

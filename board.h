@@ -31,6 +31,7 @@ class Board:public Subject, public Observer {
         int deletedRow;
 	    LevelData tetroFactory;
         void deleteTetro(Tetromino *destroy);
+        void drawToGrid(Tetromino *currTetro);
     public:
 	bool isTurn;
 	    Board(int difficulty, int playerID, Observer *display, std::string path = "", int seed = -1);

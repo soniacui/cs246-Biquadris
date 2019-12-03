@@ -25,10 +25,10 @@ void Subject::clear() {
 
 void Subject::remove(int size) {
     if (size == 1) {
-        observers.erase(observers.begin() + 1);
+        observers[1]->popped = true;
     }
     else
-        observers.pop_back();
+        observers.back()->popped = true;
 }
 
 Subject::~Subject() {}
