@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include "board.h"
 #include "textdisplay.h"
 
@@ -11,11 +12,11 @@ class Controller {
 	int argc;
 
 	//boards
- 	Board *b1;
-  	Board *b2;
+	std::unique_ptr<Board> b1;
+	std::unique_ptr<Board> b2;
 
 	//displays
-	Observer *display;
+	std::unique_ptr<Observer> display;
 	//TextDisplay text_display1;
 	//TextDisplay text_display2;
 	//Display graphics_display1;

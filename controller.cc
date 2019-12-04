@@ -40,14 +40,14 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
   //		graphics_display = new GraphicsDisplay();
   	}
 	else
-		display = new TextDisplay();
+		display = make_unique<TextDisplay>();
 
  	// initialize boards
-  	b1 = new Board(startLevel, 1, display, seqfile1, seed);
-  	b2 = new Board(startLevel, 2, display, seqfile2, seed);
+  	b1 = make_unique<Board> (startLevel, 1, display.get(), seqfile1, seed);
+  	b2 = make_unique<Board> (startLevel, 2, display.get(), seqfile2, seed);
 
-  	b1->attach(b2); //attach boards to each other
-  	b2->attach(b1);
+  	b1->attach(b2.get()); //attach boards to each other
+  	b2->attach(b1.get());
 }
 
 // read cmd line args
@@ -261,8 +261,8 @@ void Controller::multAction(int multiplier, string action, string file) {
 	} else if (action == "restart") { //restart
         	b1->restart();
 		b2->restart();
-		b1->attach(b2);
-		b2->attach(b1);
+		b1->attach(b2.get());
+		b2->attach(b1.get());
 	} else if (action == "blind" || action == "heavy") { //will not end turn
 		if (b1->isTurn) {
 			b1->performAction(action);
@@ -273,7 +273,7 @@ void Controller::multAction(int multiplier, string action, string file) {
 		//move/rotate/drop/force
 		for (int i = 0; i < multiplier; ++i) {
 			if (b1->isTurn) {
-				cout << "calling action" << endl;
+				//cout << "calling action" << endl;
 				b1->performAction(action);
 				if (!b1->isTurn) {
 					break;
