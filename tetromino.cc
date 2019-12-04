@@ -167,29 +167,19 @@ void Tetromino::moveDown() {
 
 	int bottom_most = findBottomMost();
 
-	if (bottom_most > 0) {
+	if (bottom_most > 0) { //within the board
 		for (int i = 0; i < absCoords.size(); ++i) {
-			for (int j = 0; j < absCoords.size(); ++j) {
-				if ((currGrid[absCoords[i][0]][absCoords[i][1] - 1] != currGrid[absCoords[j][0]][absCoords[j][1]]) &&  //not valid case
-				    (currGrid[absCoords[i][0]][absCoords[i][1] - 1] != ' ')) {
-						return;
-					}	
-			}
+				if ((currGrid[absCoords[i][1] - 1][absCoords[i][0]] != ' ')) {
+					return;	
+				}
 		}
-		// if "bottom" is a valid move, shift all y coords 1 down
-		cout << "trying to move down. printing shifted coords: " << endl;
+
+		// if "right" is a valid move, shift all x coords 1 right	
 		for (int i = 0; i < absCoords.size(); ++i) {
 			absCoords[i][1] = absCoords[i][1] - 1;
-			cout << absCoords[i][0] << ", " << absCoords[i][1] << endl;
+			cout << absCoords[i][1] << ", " << absCoords[i][1] << endl;
 		}
 	}
-    cout << "I HAVE THIS GRID: " << endl;
-    for (int i = 17; i >= 0; i--) {
-        for (int j = 0; j < 11; j++) {
-            cout << this->currGrid[i][j];
-        }
-        cout << endl;
-    }
 }
 
 // dir = 1 moves 1 right, dir = -1 moves 1 left
@@ -197,19 +187,19 @@ void Tetromino::moveLeftRight(int dir) {
 
 	// for each shifted abscoords, if it collides with a non-abscoords grid pixel, or is outside of bounds, don't move it. otherwise, move it
 	for (int i = 0; i < absCoords.size(); ++i) {
-			for (int j = 0; j < absCoords.size(); ++j) {
-				if ((currGrid[absCoords[i][0] + dir][absCoords[i][1]] != currGrid[absCoords[j][0]][absCoords[j][1]]) &&
-				    (currGrid[absCoords[i][0] + dir][absCoords[i][1]] != ' ')) {
-						return;
-					}	
+			cout << int(currGrid[absCoords[i][1]][absCoords[i][0] + dir]) << endl;
+			if ((currGrid[absCoords[i][1]][absCoords[i][0] + dir] != ' ')) {
+				return;	
 			}
-		}
-		// if "right" is a valid move, shift all x coords 1 right	
-		cout << "trying to move left/right. printing shifted coords: " << endl;
-		for (int i = 0; i < absCoords.size(); ++i) {
-			absCoords[i][0] = absCoords[i][0] + dir;
-			cout << absCoords[i][0] << ", " << absCoords[i][1] << endl;
 	}
+
+	// if "right" is a valid move, shift all x coords 1 right	
+	cout << "trying to move left/right. printing shifted coords: " << endl;
+	for (int i = 0; i < absCoords.size(); ++i) {
+		absCoords[i][0] = absCoords[i][0] + dir;
+		cout << absCoords[i][0] << ", " << absCoords[i][1] << endl;
+	}
+
 
 }
 
@@ -218,6 +208,13 @@ void Tetromino::move(string direction) { // move left/right
 	cout << "b.5555555555" << endl;
 	updatePreviously();
 	cout << "cccccccc" << previously.size() << endl;
+	/*cout << "I HAVE THIS GRID: " << endl;
+   	 for (int i = 17; i >= 0; i--) {
+       		 for (int j = 0; j < 11; j++) {
+          		  cout << this->currGrid[i][j];
+       		 }
+       		cout << endl;
+  	 }*/
 
 	if (direction == "right") {
 		int right_most = findRightMost();
@@ -247,85 +244,52 @@ void Tetromino::move(string direction) { // move left/right
 void Tetromino::rotate(string direction) {
 
 	updatePreviously();
-
-	if (direction == "clockwise") {
-
-		vector<vector<int>> check = absCoords; // a "trial" vector to see if the rotate is valid
-		int left_most = findLeftMost();        //find left most before shifting
-                int bottom_most = findBottomMost();     //find bottom most before shifting
-
-		// shift trial vector to origin, and rotate clockwise
-		for (int i = 0; i < check.size(); ++i) {
-			check.emplace_back(vector<int>{absCoords[i][1] - bottom_most, -(absCoords[i][0] - left_most)});
-		}
-
-		// find right-most pixel after rotating
-		int new_left_most = currGrid[0].size() - 1;
-		for (int i = 0; i < check.size(); ++i) {
-			if (check[i][0] > new_left_most) {
-				new_left_most = check[i][0];
-			}
-		}
-		// find bottom-most pixel after rotating
-		int new_bottom_most = currGrid.size() - 1;
-		for (int i = 0; i < check.size(); ++i) {
-			if (check[i][1] < new_bottom_most ) {
-				new_bottom_most = check[i][1];
-			}
-		}
+	try {
+		if (direction == "clockwise") {
 	
-		//shift back to desired location and check if valid move
-		for (int i = 0; i < check.size(); ++i) {
-			check[i][0] = check[i][0] + abs(left_most - new_left_most); 
-			check[i][1] = check[i][1] + abs(bottom_most - new_bottom_most);
-			if ((check[i][0] < 0) && (check[i][0] > currGrid[0].size() - 1) &&     //x is out of bounds
-			    (check[i][1] > currGrid.size() - 1) && (check[i][1] < 0) &&       //y is out of bounds
-			    (currGrid[check[i][0]][check[i][1]] != ' ')) {                  //rotated block overlaps
-				return;     //if move is not valid, exit
+			int left_most = findLeftMost();        //find left most before shifting
+                	int bottom_most = findBottomMost();     //find bottom most before shifting
+
+			int temp = 0;
+			for (int i = 0; i < absCoords.size(); ++i) {
+				temp = absCoords[i][0];
+				absCoords[i][0] = absCoords[i][1] - bottom_most + left_most;
+				absCoords[i][1] = left_most - temp + bottom_most;
+			}
+
+			int new_left_most = findLeftMost();
+			int new_bottom_most = findBottomMost();
+		
+			for (int i = 0; i < absCoords.size(); ++i) {
+				absCoords[i][0] -= new_left_most - left_most;
+				absCoords[i][1] -= new_bottom_most - bottom_most;
+			}
+
+		} else if (direction == "counterclockwise") {
+			int left_most = findLeftMost();        //find left most before shifting
+              	 	int bottom_most = findBottomMost();     //find bottom most before shifting
+
+			int temp = 0;
+			for (int i = 0; i < absCoords.size(); ++i) {
+				temp = absCoords[i][0];
+				absCoords[i][0] = -(absCoords[i][1]) - bottom_most + left_most;
+				absCoords[i][1] = left_most + temp + bottom_most;
+			}
+
+			int new_left_most = findLeftMost();
+			int new_bottom_most = findBottomMost();
+		
+			for (int i = 0; i < absCoords.size(); ++i) {
+				absCoords[i][0] -= new_left_most - left_most;
+				absCoords[i][1] -= new_bottom_most - bottom_most;
 			}
 		}
-		absCoords = check; //if move was valid, copy the 'check' vector
 
-	} else if (direction == "counterclockwise") {
-		vector<vector<int>> check = absCoords; // a "trial" vector to see if the rotate is valid
-                int left_most = findLeftMost();        //find left most before shifting
-                int bottom_most = findBottomMost();     //find bottom most before shifting
-		// shift trial vector to origin, and rotate clockwise
-		for (int i = 0; i < check.size(); ++i) {
-			check.emplace_back(vector<int>{-(absCoords[i][1] - bottom_most), absCoords[i][0] - left_most}); 
+		for (int i = 0; i < speed; ++i) {
+			moveDown();
 		}
-
-
-		// find right-most pixel after rotatingi
-		int new_left_most = currGrid[0].size() - 1;
-		for (int i = 0; i < check.size(); ++i) {
-			if (check[i][0] > new_left_most) {
-				new_left_most = check[i][0];
-			}
-		}
-		// find bottom-most pixel after rotating
-		int new_bottom_most = currGrid.size() - 1;
-		for (int i = 0; i < check.size(); ++i) {
-			if (check[i][1] < new_bottom_most ) {
-				new_bottom_most = check[i][1];
-			}
-		}
-	
-		//shift back to desired location and check if valid move
-		for (int i = 0; i < check.size(); ++i) {
-			check[i][0] = check[i][0] + abs(left_most - new_left_most); 
-			check[i][1] = check[i][1] + abs(bottom_most - new_bottom_most);
-			if ((check[i][0] < 0) && (check[i][0] > currGrid[0].size() - 1) &&     //x is out of bounds
-			    (check[i][1] > currGrid.size() - 1) && (check[i][1] < 0) &&       //y is out of bounds
-			    (currGrid[check[i][0]][check[i][1]] != ' ')) {                  //rotated block overlaps
-				return;     //if move is not valid, exit
-			}
-		}
-		absCoords = check; //if move was valid, copy the 'check' vector
-	}
-
-	for (int i = 0; i < speed; ++i) {
-		moveDown();
+	} catch (...) {
+		absCoords = previously;
 	}
 
 	notifyObservers();
