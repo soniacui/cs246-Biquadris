@@ -35,11 +35,12 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
 
 
   	// initialize displays
-	if (textOnly) {
- 		display = new TextDisplay();
-	}// else {
-  		//graphics_display = new GraphicsDisplay();
-  	//}
+	
+	if (!textOnly) {
+  //		graphics_display = new GraphicsDisplay();
+  	}
+	else
+		display = new TextDisplay();
 
  	// initialize boards
   	b1 = new Board(startLevel, 1, display, seqfile1, seed);
