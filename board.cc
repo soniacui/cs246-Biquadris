@@ -10,7 +10,7 @@ using namespace std;
 int Board::highScore = 0;
 
 Board::Board(int difficulty, int playerID, Observer *display, string path, int seed): 
-    tetroFactory {LevelData(difficulty, path, seed)}, display{ display }, path{ path }, seed{ seed }, difficulty{ difficulty }, playerID{ playerID } {
+    tetroFactory {LevelData(difficulty, playerID, path, seed)}, display{ display }, path{ path }, seed{ seed }, difficulty{ difficulty }, playerID{ playerID } {
     grid = vector<vector<char>> (HEIGHT, vector<char>(WIDTH, ' ')); //initialize values
     isBlind = false;
     currTetro = nullptr;
@@ -156,14 +156,14 @@ void Board::restart() {
         isTurn = true;
     else
         isTurn = false;
-    tetroFactory = LevelData(difficulty, path, seed);
+    tetroFactory = LevelData(difficulty, playerID, path, seed);
     generateTetromino(); //make the starting tetromino
     notifyObservers(); //display starting state
 }
 
 void Board::toggleRandom(string newPath) {
     if (difficulty == 3 || difficulty == 4 && !menu) {
-        tetroFactory = LevelData(difficulty, newPath); //remake factory with path to sequence with requested randomness
+        tetroFactory = LevelData(difficulty, playerID, newPath); //remake factory with path to sequence with requested randomness
     }
     notifyObservers();
 }
@@ -194,14 +194,14 @@ void Board::performAction(string action, string newPath) { //handles input as a 
     else if (action == "levelup") {
         if (difficulty != 4 && !menu) {
             difficulty++;
-            tetroFactory = LevelData(difficulty, path, seed); //make new factory for blocks
+            tetroFactory = LevelData(difficulty, playerID, path, seed); //make new factory for blocks
         }
         notifyObservers();
     }
     else if (action == "leveldown") {
         if (difficulty != 0 && !menu) {
             difficulty--;
-            tetroFactory = LevelData(difficulty, path, seed); //make new factory for blocks
+            tetroFactory = LevelData(difficulty, playerID, path, seed); //make new factory for blocks
         }
         notifyObservers();
     }
