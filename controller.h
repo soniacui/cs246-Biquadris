@@ -34,10 +34,7 @@ class Controller {
         char c;
         int multiplier;
 	// command list
-	std::vector<std::string> commands = {"left", "right", "down", "clockwise", "counterclockwise",
-                             "drop", "levelup", "leveldown", "norandom", "random", 
-                             "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart", 
- 		             "blind", "heavy", "force"};
+	std::vector<std::string> commands;
 	char** argv;
 
 	public:
