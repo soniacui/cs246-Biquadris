@@ -31,23 +31,22 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
 	// command list
         commands = {"left", "right", "down", "clockwise", "counterclockwise",
                              "drop", "levelup", "leveldown", "norandom", "random", 
-                             "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart", "force", "blind", "heavy"};
+                             "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart", "force", "blind", "heavy", "quit"};
 
 
   	// initialize displays
-	
-	if (!textOnly) {
-  //		graphics_display = new GraphicsDisplay();
-  	}
-	else
-		display = make_unique<TextDisplay>();
+	if (textOnly) {
+ 		display = new TextDisplay();
+	}// else {
+  		//graphics_display = new GraphicsDisplay();
+  	//}
 
  	// initialize boards
-  	b1 = make_unique<Board> (startLevel, 1, display.get(), seqfile1, seed);
-  	b2 = make_unique<Board> (startLevel, 2, display.get(), seqfile2, seed);
+  	b1 = new Board(startLevel, 1, display, seqfile1, seed);
+  	b2 = new Board(startLevel, 2, display, seqfile2, seed);
 
-  	b1->attach(b2.get()); //attach boards to each other
-  	b2->attach(b1.get());
+  	b1->attach(b2); //attach boards to each other
+  	b2->attach(b1);
 }
 
 // read cmd line args
@@ -215,7 +214,9 @@ void Controller::matchCmd(string s) {
 	} else if (cmd == commands.at(21)) {
 		//cout << "command: heavy" << endl;
 		multAction(1, "heavy");
-	 }
+	 } else if (cmd == commands.at(22)) {
+		return 0;
+	}
 	else {
 		throw 1;
 	}
@@ -261,8 +262,8 @@ void Controller::multAction(int multiplier, string action, string file) {
 	} else if (action == "restart") { //restart
         	b1->restart();
 		b2->restart();
-		b1->attach(b2.get());
-		b2->attach(b1.get());
+		b1->attach(b2);
+		b2->attach(b1);
 	} else if (action == "blind" || action == "heavy") { //will not end turn
 		if (b1->isTurn) {
 			b1->performAction(action);
