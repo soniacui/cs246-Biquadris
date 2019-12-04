@@ -85,30 +85,21 @@ void Tetromino::notify(Subject &notifier) {
 	if (popped)
 		return;
     shared_ptr<BoardInfo> bInfo = notifier.getInfo(); //all its observers' getInfo() return type BoardInfo
-    cout << "I am type: " << type << endl;
+    cout << "looping" << endl;
     if (bInfo->deletedRow != -1) { //case that the board had deleted a row, must update absCoords
-	    cout << "i know row is deleted: " << bInfo->deletedRow << endl;
         if (isDeleted) //if already deleted, no new points awarded
             return;
-	cout << "updating self" << endl;
         for (int i = 0; i < absCoords.size(); i++) {
             if (absCoords[i][1] == bInfo->deletedRow) { //remove block's coordinates that have been deleted
-		    cout << "deleting" << endl;
                 absCoords.erase(absCoords.begin() + i);
-		cout << "deleted" << endl;
                 i--;
             }
             else if (absCoords[i][1] > bInfo->deletedRow) { //shift block's coordinates above the deleted line down
-                absCoords[i][0]--;
+                absCoords[i][1]--;
             }
         }
-	cout << "NOW I HAVE COORDS: " << endl;
-	for (int i = 0; i < absCoords.size(); i++)
-		cout << absCoords[i][0] << ", " << absCoords[i][1] << endl;
         if (absCoords.size() == 0) { //if there is nothing left, it has been deleted
-		cout << "yep, me done" << endl;
             isDeleted = true;
-	    absCoords.push_back(vector<int>(1, 1));
             notifyObservers(); //notify board to give extra points
         }
     }
@@ -117,7 +108,6 @@ void Tetromino::notify(Subject &notifier) {
 }
 
 shared_ptr<TetrominoInfo> Tetromino::getTetroInfo() {
-	cout << "getting info" << endl;
     shared_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, speed, isDropped, isDeleted, isHeavy) };
     cout << "ASDASDASDAS" << tInfo->absCoords[0][0] << endl;
     return tInfo;
@@ -254,6 +244,12 @@ void Tetromino::move(string direction) { // move left/right
 void Tetromino::rotate(string direction) {
 
 	updatePreviously();
+	cout << "PREVIOUSLY" << endl;
+	for (int i = 0; i < previously.size(); ++i) {
+		if (previously[i][0] != absCoords[i][0] || previously[i][1] != absCoords[i][1]) {
+			cout << previously[i][0] << ", " << previously[i][1] << endl;
+		}
+	}
 	try {
 		if (direction == "clockwise") {
 	
@@ -274,6 +270,13 @@ void Tetromino::rotate(string direction) {
 				absCoords[i][0] -= new_left_most - left_most;
 				absCoords[i][1] -= new_bottom_most - bottom_most;
 			}
+			for (int i = 0; i < absCoords.size(); ++i) {
+				if ((absCoords[i][0] < 0) || (absCoords[i][0] > currGrid[0].size() - 1) || 
+				   (absCoords[i][1] < 0) || (absCoords[i][1] > currGrid.size() - 1)) {
+					absCoords = previously;
+					break;
+				   }
+			}
 
 		} else if (direction == "counterclockwise") {
 			int left_most = findLeftMost();        //find left most before shifting
@@ -292,7 +295,16 @@ void Tetromino::rotate(string direction) {
 			for (int i = 0; i < absCoords.size(); ++i) {
 				absCoords[i][0] -= new_left_most - left_most;
 				absCoords[i][1] -= new_bottom_most - bottom_most;
+				cout << "abscoords[i][1]" << absCoords[i][1] << endl;
 			}
+			for (int i = 0; i < absCoords.size(); ++i) {
+				if ((absCoords[i][0] < 0) || (absCoords[i][0] > currGrid[0].size() - 1) || 
+				   (absCoords[i][1] < 0) || (absCoords[i][1] > currGrid.size() - 1)) {
+					absCoords = previously;
+					break;
+				   }
+			}
+
 		}
 
 		for (int i = 0; i < speed; ++i) {
@@ -305,6 +317,20 @@ void Tetromino::rotate(string direction) {
 	notifyObservers();
 }
 
+
+void Tetromino::drop() {  
+
+	updatePreviously();
+	vector<vector<int>> temp;
+
+	do { 
+		temp = absCoords;     
+		moveDown();
+	} while (temp != absCoords);
+
+	isDropped = true;
+	notifyObservers(); 
+}
 
 void Tetromino::drop() {  
 
