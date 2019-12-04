@@ -85,21 +85,30 @@ void Tetromino::notify(Subject &notifier) {
 	if (popped)
 		return;
     shared_ptr<BoardInfo> bInfo = notifier.getInfo(); //all its observers' getInfo() return type BoardInfo
-    cout << "looping" << endl;
+    cout << "I am type: " << type << endl;
     if (bInfo->deletedRow != -1) { //case that the board had deleted a row, must update absCoords
+	    cout << "i know row is deleted: " << bInfo->deletedRow << endl;
         if (isDeleted) //if already deleted, no new points awarded
             return;
+	cout << "updating self" << endl;
         for (int i = 0; i < absCoords.size(); i++) {
             if (absCoords[i][1] == bInfo->deletedRow) { //remove block's coordinates that have been deleted
+		    cout << "deleting" << endl;
                 absCoords.erase(absCoords.begin() + i);
+		cout << "deleted" << endl;
                 i--;
             }
             else if (absCoords[i][1] > bInfo->deletedRow) { //shift block's coordinates above the deleted line down
-                absCoords[i][1]--;
+                absCoords[i][0]--;
             }
         }
+	cout << "NOW I HAVE COORDS: " << endl;
+	for (int i = 0; i < absCoords.size(); i++)
+		cout << absCoords[i][0] << ", " << absCoords[i][1] << endl;
         if (absCoords.size() == 0) { //if there is nothing left, it has been deleted
+		cout << "yep, me done" << endl;
             isDeleted = true;
+	    absCoords.push_back(vector<int>(1, 1));
             notifyObservers(); //notify board to give extra points
         }
     }
@@ -108,6 +117,7 @@ void Tetromino::notify(Subject &notifier) {
 }
 
 shared_ptr<TetrominoInfo> Tetromino::getTetroInfo() {
+	cout << "getting info" << endl;
     shared_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, speed, isDropped, isDeleted, isHeavy) };
     cout << "ASDASDASDAS" << tInfo->absCoords[0][0] << endl;
     return tInfo;

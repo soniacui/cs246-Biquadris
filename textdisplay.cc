@@ -47,6 +47,14 @@ if (isInit1 && isInit2)
 
 ostream &operator<<(std::ostream &out, const TextDisplay &td)
 {
+	if (td.hasLostP1){
+		out << "P2 WINS" << endl;
+		return out;
+	}
+	else if (td.hasLostP2){
+		out << "P2 WINS" << endl;
+		return out;
+	}
 	if (td.isMenu) { 
 	out << "----------------------------" << endl;
 	out << " || Select a punishment || " << endl;

@@ -96,7 +96,7 @@ void Board::clearLine() {
                 toBeCleared = false; //if there is a space in current line, do not remove line
         }
         if (toBeCleared) { //if current line has no spaces, perform removal
-		cout << "clearing" << endl;
+		cout << "clearing: " << i << endl;
             deletedRow = i;
             for (int y = 0; y < HEIGHT; y++) { //from bottom up
                 if (y == HEIGHT - 1) { //very first row is always fresh
@@ -107,13 +107,16 @@ void Board::clearLine() {
                     grid[y] = grid[y + 1];
             }
             linesCleared++;
-            if (linesCleared != 0 && (linesCleared / 2) == 0) { //every 2 lines cleared, choose effect for opponent
+	    notifyObservers();
+	    cout << "tis prob wonr run" << endl;
+	    deletedRow = -1; //reset
+            if (linesCleared != 0 && ((linesCleared % 2) == 0)) { //every 2 lines cleared, choose effect for opponent
                 menu = true; //set menu to true, allow only commands that deal with menu
                 notifyObservers();
                 menu = false; //allow regular commands to have effect again
             }
             sinceLastClear = 0; //reset counter for moves since last clear
-            notifyObservers(); //notify to tetrominoes in case they might award extra points for removing completely
+            //notifyObservers(); //notify to tetrominoes in case they might award extra points for removing completely
                                //notify to display to update grid as well
                                //notify opponent to suffer punishment if applicable
             currPunish = ""; //reset intent to punish
@@ -423,7 +426,9 @@ void Board::sufferPunishment(string effect) {
 }
 
 void Board::notify(Subject &notifier) {
+	cout << "BOARD HAS BEEN NOTIFIED" << endl;
     shared_ptr<TetrominoInfo>tInfo = notifier.getTetroInfo(); //get relevant information from caller
+    cout << "HMMM" << endl;
     shared_ptr<BoardInfo>bInfo = notifier.getInfo();
     cout << "bbbbbbbbbb" << endl;
     cout << tInfo << endl;
@@ -431,10 +436,17 @@ void Board::notify(Subject &notifier) {
     if (tInfo != nullptr) { //if caller is a tetromino
 	    cout << "TETRO" << endl;
         if (tInfo->isDeleted) { //case for tetromino has been removed from board
+		cout << "SOMETHING HAS BEEN TOTAL DELETED" << endl;
             score += (tInfo->value + 1) * (tInfo->value + 1); //add points
-            deletedRow = -1; //reset deleted row to default
-            if (score > Board::highScore) //change static highscore if my score is greater
+	    if (score > Board::highScore) //change static highscore if my score is greater
                 Board::highScore = score;
+	    int tempDeleted = deletedRow;
+            deletedRow = -1; //temporarily reset deleted row to default so no recalls of other tetro
+	    notifyObservers();
+	    deletedRow = tempDeleted;
+	    return;
+            //if (score > Board::highScore) //change static highscore if my score is greater
+            //    Board::highScore = score;
         }
         else { //handling tetromino representation on internal grid
 		    cout << "dddddddd" << endl;
