@@ -120,12 +120,15 @@ void Board::clearLine() {
                                //notify to display to update grid as well
                                //notify opponent to suffer punishment if applicable
             currPunish = ""; //reset intent to punish
+	    i--;
         }
     }
     if (linesCleared == 0) //if this step did not clear anything, increase counter
         sinceLastClear++;
-    else
-        score += difficulty + (linesCleared * linesCleared); //score increased for clearing lines
+    else {
+        score += (difficulty + linesCleared) * (difficulty + linesCleared); //score increased for clearing lines
+	cout << "score added for lines only: " << (difficulty + linesCleared) * (difficulty + linesCleared) << endl;
+    }
     if (sinceLastClear == 5) {
         sinceLastClear = 0;
         if (difficulty == 4)
@@ -256,7 +259,7 @@ void Board::performAction(string action, string newPath) { //handles input as a 
         }
         else{
                 sufferPunishment("O");
-                notifyObservers();
+                 notifyObservers();
         }
     }
     else if (action == "forceS") {
