@@ -9,7 +9,7 @@
 #include "tetromino.h"
 #include "info.h"
 #include "textdisplay.h"
-//#include "graphicsdisplay.h"
+#include "graphicsdisplay.h"
 
 using namespace std;
 
@@ -31,15 +31,13 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
 	// command list
         vector<string> commands = {"left", "right", "down", "clockwise", "counterclockwise",
                              "drop", "levelup", "leveldown", "norandom", "random", 
-                             "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart"};
+                             "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart", "force", "blind, "heavy"};
 
 
   	// initialize displays
-	if (textOnly)
- 		display = new TextDisplay();
-	else {
-  		//graphics_display1 = new GraphicsDisplay(); //what do we do with graphics display?
- 		//graphics_display2 = new GraphicsDisplay(); //it's not in the Board ctor
+ 	display = new TextDisplay();
+	if (!textOnly) {
+  		graphics_display = new GraphicsDisplay();
   	}
 
  	// initialize boards
@@ -189,32 +187,25 @@ void Controller::matchCmd(string s) {
    	else if (cmd == commands.at(17)) {
     	 	cout << "command: T" << endl;
 		multAction(multiplier, "forceT");
-   	}
-   	else if (cmd == commands.at(18)) {
+   	} else if (cmd == commands.at(18)) {
     	 	cout << "command: restart" << endl;
 		multAction(1, "restart");
-   	} else {
-		throw 1;
-	}
-     //} else {
-	   if (cmd == commands.at(19)) {
-		cout << "command: blind" << endl;
-		multAction(1, "blind");
-	   } else if (cmd == commands.at(20)) {
-		cout << "command: heavy" << endl;
-		multAction(1, "heavy");
-	   } else if (cmd == commands.at(18)) {
+   	} else if (cmd == commands.at(19)) {
 		cout << "command: force" << endl;
 		string type;
 		cin >> type;
 		multAction(1, "force" + type);
-	   }
-     //}
-        //cout << *static_cast<TextDisplay *>(display) << endl;
-        //if (checkGameOver()) {  // if game over, instant restart?
-	//	multAction(1, "restart");
-   	//}
-	multiplier = 1;
+	} else if (cmd == commands.at(20)) {
+		cout << "command: blind" << endl;
+		multAction(1, "blind");
+	} else if (cmd == commands.at(21)) {
+		cout << "command: heavy" << endl;
+		multAction(1, "heavy");
+	 }
+	else {
+		throw 1;
+	}
+ 	multiplier = 1;
     } 
     catch (int e) {
         cout << "Unrecognized command. Please try again." << endl;
@@ -242,10 +233,6 @@ void Controller::readFile(string file) {
    
   }
 }
-
-//bool Controller::checkGameOver() {
-//	return (b1.isGameOver() || b2.isGameOver());
-//}
 
 void Controller::multAction(int multiplier, string action, string file) {
 	if (action == "norandom" || action == "random") {
