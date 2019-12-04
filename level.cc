@@ -20,12 +20,8 @@ LevelData::LevelData(int difficulty, int playerID, string path, int seed): diffi
 	} else if (difficulty == 0) { // if no sequence is given and level is 0, use default files
 		if (playerID == 1) {
 	    		input.open("biquadris_sequence1.txt", std::ifstream::in);
-						cout << "1111111111" << endl;
-
 		} else if (playerID == 2) {
 	    		input.open("biquadris_sequence2.txt", std::ifstream::in);
-			cout << "222222222" << endl;
-
 		}
 	    	while (input >> s) {
 			cout << "aaaaa" << endl;
@@ -137,7 +133,6 @@ Tetromino* LevelData::generateTetromino(vector<vector<char>> grid) {
 
 //returns a tetromino pointer of the desired type{L, J, O ... *}
 Tetromino* LevelData::forceGenerate(vector<vector<char>> grid, std::string typeForced) {
-	cout << "3333" << endl;
 	Tetromino *t;
 	if (typeForced == "S") {
 		t = new SBlock(grid, difficulty);
