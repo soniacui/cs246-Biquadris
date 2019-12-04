@@ -8,14 +8,29 @@
 
 using namespace std;
 
-LevelData::LevelData(int difficulty, string path, int seed): difficulty{difficulty}, path{path}, seed{seed} {
-	index = 0;
+LevelData::LevelData(int difficulty, int playerID, string path, int seed): difficulty{difficulty}, playerID{playerID}, path{path}, seed{seed} {
+	index = 0; 
 	string s;
-	if (path != "") {             //load input seq  
-            ifstream input (path, std::ifstream::in);        
-            while (input >> s) {
-		seq.push_back(s);
+        ifstream input;
+	if (path != "") {          // if any sequence was given  
+            input.open(path, std::ifstream::in);        
+            while (input >> s) { 
+		seq.push_back(s);  //load input seq  
 	    }
+	} else if (difficulty == 0) { // if no sequence is given and level is 0, use default files
+		if (playerID == 1) {
+	    		input.open("biquadris_sequence1.txt", std::ifstream::in);
+						cout << "1111111111" << endl;
+
+		} else if (playerID == 2) {
+	    		input.open("biquadris_sequence2.txt", std::ifstream::in);
+			cout << "222222222" << endl;
+
+		}
+	    	while (input >> s) {
+			cout << "aaaaa" << endl;
+			seq.push_back(s);
+	 	}
 	}
         if (seed != -1) {
 	    srand(seed);
@@ -32,13 +47,8 @@ Tetromino* LevelData::generateTetromino(vector<vector<char>> grid) {
     string s;
     Tetromino *t;
     if (difficulty == 0 || path != "") { // if user has called norandom with a file path
-	    if (path == ""){
-		    cout << "OOPS, NO PATH GIVEN" << endl;
-		    //IF DIFFICULTY WAS 0 AND NO PATH WAS GIVEN, THEN DEFAULT TO THE ORIGINAL FILES SOMEHOW PLS FILL ME
-	    }
-	    if (index > seq.size()) {
+	if (index >= seq.size()) {
 		index = 0; // if we reached the end of our seq file, go back to top
-	
 	}
 	s = seq.at(index); 
 	++index;
