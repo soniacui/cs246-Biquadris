@@ -23,7 +23,6 @@ LevelData::LevelData(int difficulty, int playerID, string path, int seed): diffi
 
 		} else if (playerID == 2) {
 	    		input.open("sequence2.txt", std::ifstream::in);
-
 		}
 	    	while (input >> s) {
 			seq.push_back(s);
