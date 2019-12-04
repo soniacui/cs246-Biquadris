@@ -254,6 +254,12 @@ void Tetromino::move(string direction) { // move left/right
 void Tetromino::rotate(string direction) {
 
 	updatePreviously();
+	cout << "PREVIOUSLY" << endl;
+	for (int i = 0; i < previously.size(); ++i) {
+		if (previously[i][0] != absCoords[i][0] || previously[i][1] != absCoords[i][1]) {
+			cout << previously[i][0] << ", " << previously[i][1] << endl;
+		}
+	}
 	try {
 		if (direction == "clockwise") {
 	
@@ -274,6 +280,13 @@ void Tetromino::rotate(string direction) {
 				absCoords[i][0] -= new_left_most - left_most;
 				absCoords[i][1] -= new_bottom_most - bottom_most;
 			}
+			for (int i = 0; i < absCoords.size(); ++i) {
+				if ((absCoords[i][0] < 0) || (absCoords[i][0] > currGrid[0].size() - 1) || 
+				   (absCoords[i][1] < 0) || (absCoords[i][1] > currGrid.size() - 1)) {
+					absCoords = previously;
+					break;
+				   }
+			}
 
 		} else if (direction == "counterclockwise") {
 			int left_most = findLeftMost();        //find left most before shifting
@@ -292,7 +305,16 @@ void Tetromino::rotate(string direction) {
 			for (int i = 0; i < absCoords.size(); ++i) {
 				absCoords[i][0] -= new_left_most - left_most;
 				absCoords[i][1] -= new_bottom_most - bottom_most;
+				cout << "abscoords[i][1]" << absCoords[i][1] << endl;
 			}
+			for (int i = 0; i < absCoords.size(); ++i) {
+				if ((absCoords[i][0] < 0) || (absCoords[i][0] > currGrid[0].size() - 1) || 
+				   (absCoords[i][1] < 0) || (absCoords[i][1] > currGrid.size() - 1)) {
+					absCoords = previously;
+					break;
+				   }
+			}
+
 		}
 
 		for (int i = 0; i < speed; ++i) {
