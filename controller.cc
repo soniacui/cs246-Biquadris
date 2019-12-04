@@ -9,7 +9,7 @@
 #include "tetromino.h"
 #include "info.h"
 #include "textdisplay.h"
-#include "graphicsdisplay.h"
+//#include "graphicsdisplay.h"
 
 using namespace std;
 
@@ -29,16 +29,18 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
         c = 0;
         multiplier = 1;
 	// command list
-        vector<string> commands = {"left", "right", "down", "clockwise", "counterclockwise",
+        commands = {"left", "right", "down", "clockwise", "counterclockwise",
                              "drop", "levelup", "leveldown", "norandom", "random", 
-                             "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart", "force", "blind, "heavy"};
+                             "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart", "force", "blind", "heavy"};
 
 
   	// initialize displays
- 	display = new TextDisplay();
+	
 	if (!textOnly) {
-  		graphics_display = new GraphicsDisplay();
+  //		graphics_display = new GraphicsDisplay();
   	}
+	else
+		display = new TextDisplay();
 
  	// initialize boards
   	b1 = new Board(startLevel, 1, display, seqfile1, seed);
@@ -69,21 +71,20 @@ void Controller::readArgs() {
   //cout << "startLevel: " << startLevel << endl;
   //cout << "seqfile1: " << seqfile1 << endl;
   //cout << "seqfile2: " << seqfile2 << endl;
-
-
 }
 
+// matches string s to a command
 void Controller::matchCmd(string s) {
-    cout << "creating stream: " << endl;
+    // cout << "creating stream: " << endl;
     istringstream iss (s);
 
     // check if command contains a multiplier
-    cout << "peeking: " << endl;
+    // cout << "peeking: " << endl;
     c = iss.peek();
-    cout << "PEEKED c: " << c << endl;
+    //cout << "PEEKED c: " << c << endl;
     if (c >= '0' && c <= '9') {
 	iss >> multiplier;
-        cout << "multiplier: " << multiplier << endl;
+        //cout << "multiplier: " << multiplier << endl;
 
     }
 
@@ -91,15 +92,16 @@ void Controller::matchCmd(string s) {
 	int matches = 0;
    	int matched_index = 0;
 	
-	cout << "checking matches: " << endl;
+	//cout << "checking matches: " << endl;
 	// check if the user's command matches an existing command
    	if (iss >> cmd) {
-		cout << "user's command: " << cmd << endl;
+		//cout << "user's command: " << cmd << endl;
 		for (int i = 0; i < commands.size(); ++i) {
 		    if (commands.at(i).substr(0, cmd.length()) == cmd) {
+			//cout << "the command in the array: " << commands.at(i) << endl;
 			matched_index = i;
 			++matches;
-			cout << "matched index: " << matched_index << endl;
+			//cout << "matched index: " << matched_index << endl;
      	       }
     	    }
    	}
@@ -110,96 +112,108 @@ void Controller::matchCmd(string s) {
 	}
 
 	cmd = commands.at(matched_index);
-    //if (!b1.menu && !b2.menu) {
-    	cout << "matching command: " << endl;
+    	//cout << "matching command: " << endl;
     	if (cmd == commands.at(0)) { 
-       		cout << "command: left" << endl;
+       		//cout << "command: left" << endl;
 		multAction(multiplier, "left");
    	}
    	else if (cmd == commands.at(1)) {
-    		cout << "command: right" << endl;
+    		//cout << "command: right" << endl;
 		multAction(multiplier, "right");   	
 	}
    	else if (cmd == commands.at(2)) {
-    	        cout << "command: down" << endl;
+    	        //cout << "command: down" << endl;
 		multAction(multiplier, "down");  
     	}
     	else if (cmd == commands.at(3)) {
-    		cout << "command: clockwise" << endl;
+    		//cout << "command: clockwise" << endl;
 		multAction(multiplier, "clockwise"); 
  	}
    	else if (cmd == commands.at(4)) {
-    	 	cout << "command: counterclockwise" << endl;
+    	 	//cout << "command: counterclockwise" << endl;
 		multAction(multiplier, "counterclockwise"); 
     	}
     	else if (cmd == commands.at(5)) {
-    	        cout << "command: drop" << endl;
-		multAction(1, "drop"); //ignores multiplier
+    	        //cout << "command: drop" << endl;
+		multAction(multiplier, "drop"); //ignores multiplier
   	}
  	else if (cmd == commands.at(6)) {
-    	        cout << "command: levelup" << endl;
+    	        //cout << "command: levelup" << endl;
 		multAction(multiplier, "levelup"); 
   	}
   	else if (cmd == commands.at(7)) {
-    	        cout << "command: leveldown" << endl;
+    	        //cout << "command: leveldown" << endl;
 		multAction(multiplier, "leveldown"); 
   	}
   	else if (cmd == commands.at(8)) {
 		string file;
-    	 	cout << "command: norandom" << endl;
-		cin >> file;       
-		multAction(1, "norandom", file);
+    	 	//cout << "command: norandom" << endl;
+		cin >> file; 
+		if (multiplier != 0) {      
+			multAction(1, "norandom", file);
+		} else {
+			multAction(0, "norandom", file);
+		}
    	}
   	else if (cmd == commands.at(9)) {
-    	 	cout << "command: random" << endl;
-		multAction(1, "random");	
+    	 	//cout << "command: random" << endl;
+		if (multiplier != 0) {      
+			multAction(1, "random");
+		} else {
+			multAction(0, "random");
+		}
+	
   	}
    	else if (cmd == commands.at(10)) {
-    	 	cout << "command: sequence" << endl;
+    	 	//cout << "command: sequence" << endl;
 		string file;
 		cin >> file;
-		multAction(1, "sequence", file);
+		if (multiplier != 0) {      
+			multAction(1, "sequence", file);
+		} else {
+			multAction(0, "sequence", file);
+		}
   	}
    	else if (cmd == commands.at(11)) {                             
-    	 	cout << "command: I" << endl;                          
+    	 	//cout << "command: I" << endl;                          
 		multAction(multiplier, "forceI");
   	}
   	else if (cmd == commands.at(12)) {
-    	 	cout << "command: J" << endl;
+    	 	//cout << "command: J" << endl;
 		multAction(multiplier, "forceJ");
    	}
     	else if (cmd == commands.at(13)) {
-    	 	cout << "command: L" << endl;
+    	 	//cout << "command: L" << endl;
 		multAction(multiplier, "forceL");
    	}
    	else if (cmd == commands.at(14)) {
-    	 	cout << "command: O" << endl;
+    	 	//cout << "command: O" << endl;
 		multAction(multiplier, "forceO");
    	}
    	else if (cmd == commands.at(15)) {
-    	 	cout << "command: S" << endl;
+    	 	//cout << "command: S" << endl;
 		multAction(multiplier, "forceS");
    	}
     	else if (cmd == commands.at(16)) {
-    	 	cout << "command: Z" << endl;
+    	 	//cout << "command: Z" << endl;
 		multAction(multiplier, "forceZ");
    	}
    	else if (cmd == commands.at(17)) {
-    	 	cout << "command: T" << endl;
+    	 	//cout << "command: T" << endl;
 		multAction(multiplier, "forceT");
    	} else if (cmd == commands.at(18)) {
-    	 	cout << "command: restart" << endl;
-		multAction(1, "restart");
+    	 	//cout << "command: restart" << endl;
+		multAction(multiplier, "restart");
    	} else if (cmd == commands.at(19)) {
-		cout << "command: force" << endl;
+		//cout << "command: force" << endl;
 		string type;
 		cin >> type;
 		multAction(1, "force" + type);
 	} else if (cmd == commands.at(20)) {
-		cout << "command: blind" << endl;
+		//cout << "command: blind" << endl;
 		multAction(1, "blind");
 	} else if (cmd == commands.at(21)) {
-		cout << "command: heavy" << endl;
+		//cout << "command: heavy" << endl;
 		multAction(1, "heavy");
 	 }
 	else {
@@ -226,7 +240,7 @@ void Controller::readStdin() {
 void Controller::readFile(string file) {
 
   // read input from file until EOF
-  ifstream ifs {file};
+  ifstream ifs (file, std::ifstream::in);
   string s;
   while (ifs >> s) {
      matchCmd(s);
@@ -234,6 +248,7 @@ void Controller::readFile(string file) {
   }
 }
 
+// perform action multiplier times
 void Controller::multAction(int multiplier, string action, string file) {
 	if (action == "norandom" || action == "random") {
 		if (b1->isTurn) {
@@ -241,7 +256,7 @@ void Controller::multAction(int multiplier, string action, string file) {
 		} else {
 			b2->toggleRandom(file);
 		}
-	} else if (action == "sequence") {
+	} else if (action == "sequence") {	
 		readFile(file);
 	} else if (action == "restart") { //restart
         	b1->restart();

@@ -19,12 +19,12 @@ LevelData::LevelData(int difficulty, int playerID, string path, int seed): diffi
 	    }
 	} else if (difficulty == 0) { // if no sequence is given and level is 0, use default files
 		if (playerID == 1) {
-	    		input.open("biquadris_sequence1.txt", std::ifstream::in);
+	    		input.open("sequence1.txt", std::ifstream::in);
+
 		} else if (playerID == 2) {
-	    		input.open("biquadris_sequence2.txt", std::ifstream::in);
+	    		input.open("sequence2.txt", std::ifstream::in);
 		}
 	    	while (input >> s) {
-			cout << "aaaaa" << endl;
 			seq.push_back(s);
 	 	}
 	}
