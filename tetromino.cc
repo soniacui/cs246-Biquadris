@@ -2,7 +2,6 @@
 #include "info.h"
 #include <memory>
 #include <vector>
-#include <iostream> //////asdsadasdsadasdasREMOVE
 
 using namespace std;
 
@@ -12,23 +11,9 @@ char Tetromino::getType() {
 
 void Tetromino::updateGrid(vector<vector<char>> grid) {
     currGrid = grid;
-    cout << "I HAVE UPDATED TO HAVE THIS GRID: " << endl;
-    for (int i = 17; i >= 0; i--) {
-        for (int j = 0; j < 11; j++) {
-            cout << this->currGrid[i][j];
-        }
-        cout << endl;
-    }
 }
 
 Tetromino::Tetromino(vector<vector<char>> currGrid, int difficulty, char type) : currGrid{ currGrid }, value { difficulty }, type{ type } {
-    cout << "I HAVE THIS GRID: " << endl;
-    for (int i = 17; i >= 0; i--) {
-        for (int j = 0; j < 11; j++) {
-            cout << this->currGrid[i][j];
-        }
-        cout << endl;
-    }
     if (difficulty == 3 || difficulty == 4) {
         speed = 1;
     }
@@ -85,28 +70,20 @@ void Tetromino::notify(Subject &notifier) {
 	if (popped)
 		return;
     shared_ptr<BoardInfo> bInfo = notifier.getInfo(); //all its observers' getInfo() return type BoardInfo
-    cout << "I am type: " << type << endl;
     if (bInfo->deletedRow != -1) { //case that the board had deleted a row, must update absCoords
-	    cout << "i know row is deleted: " << bInfo->deletedRow << endl;
         if (isDeleted) //if already deleted, no new points awarded
             return;
-	cout << "updating self" << endl;
         for (int i = 0; i < absCoords.size(); i++) {
             if (absCoords[i][1] == bInfo->deletedRow) { //remove block's coordinates that have been deleted
-		    cout << "deleting" << endl;
                 absCoords.erase(absCoords.begin() + i);
-		cout << "deleted" << endl;
                 i--;
             }
             else if (absCoords[i][1] > bInfo->deletedRow) { //shift block's coordinates above the deleted line down
                 absCoords[i][0]--;
             }
         }
-	cout << "NOW I HAVE COORDS: " << endl;
 	for (int i = 0; i < absCoords.size(); i++)
-		cout << absCoords[i][0] << ", " << absCoords[i][1] << endl;
         if (absCoords.size() == 0) { //if there is nothing left, it has been deleted
-		cout << "yep, me done" << endl;
             isDeleted = true;
 	    absCoords.push_back(vector<int>(1, 1));
             notifyObservers(); //notify board to give extra points
@@ -117,9 +94,7 @@ void Tetromino::notify(Subject &notifier) {
 }
 
 shared_ptr<TetrominoInfo> Tetromino::getTetroInfo() {
-	cout << "getting info" << endl;
     shared_ptr<TetrominoInfo> tInfo{ new TetrominoInfo(previously, absCoords, type, value, speed, isDropped, isDeleted, isHeavy) };
-    cout << "ASDASDASDAS" << tInfo->absCoords[0][0] << endl;
     return tInfo;
 }
 
@@ -187,7 +162,6 @@ void Tetromino::moveDown() {
 		// if "right" is a valid move, shift all x coords 1 right	
 		for (int i = 0; i < absCoords.size(); ++i) {
 			absCoords[i][1] = absCoords[i][1] - 1;
-			cout << absCoords[i][1] << ", " << absCoords[i][1] << endl;
 		}
 	}
 }
@@ -197,17 +171,14 @@ void Tetromino::moveLeftRight(int dir) {
 
 	// for each shifted abscoords, if it collides with a non-abscoords grid pixel, or is outside of bounds, don't move it. otherwise, move it
 	for (int i = 0; i < absCoords.size(); ++i) {
-			cout << int(currGrid[absCoords[i][1]][absCoords[i][0] + dir]) << endl;
 			if ((currGrid[absCoords[i][1]][absCoords[i][0] + dir] != ' ')) {
 				return;	
 			}
 	}
 
 	// if "right" is a valid move, shift all x coords 1 right	
-	cout << "trying to move left/right. printing shifted coords: " << endl;
 	for (int i = 0; i < absCoords.size(); ++i) {
 		absCoords[i][0] = absCoords[i][0] + dir;
-		cout << absCoords[i][0] << ", " << absCoords[i][1] << endl;
 	}
 
 
@@ -215,16 +186,7 @@ void Tetromino::moveLeftRight(int dir) {
 
 //notifyObservers called upon every state change (includes move, rotate, drop, and instances of notify)
 void Tetromino::move(string direction) { // move left/right
-	cout << "b.5555555555" << endl;
 	updatePreviously();
-	cout << "cccccccc" << previously.size() << endl;
-	/*cout << "I HAVE THIS GRID: " << endl;
-   	 for (int i = 17; i >= 0; i--) {
-       		 for (int j = 0; j < 11; j++) {
-          		  cout << this->currGrid[i][j];
-       		 }
-       		cout << endl;
-  	 }*/
 
 	if (direction == "right") {
 		int right_most = findRightMost();
@@ -254,10 +216,8 @@ void Tetromino::move(string direction) { // move left/right
 void Tetromino::rotate(string direction) {
 
 	updatePreviously();
-	cout << "PREVIOUSLY" << endl;
 	for (int i = 0; i < previously.size(); ++i) {
 		if (previously[i][0] != absCoords[i][0] || previously[i][1] != absCoords[i][1]) {
-			cout << previously[i][0] << ", " << previously[i][1] << endl;
 		}
 	}
 	try {
@@ -305,7 +265,6 @@ void Tetromino::rotate(string direction) {
 			for (int i = 0; i < absCoords.size(); ++i) {
 				absCoords[i][0] -= new_left_most - left_most;
 				absCoords[i][1] -= new_bottom_most - bottom_most;
-				cout << "abscoords[i][1]" << absCoords[i][1] << endl;
 			}
 			for (int i = 0; i < absCoords.size(); ++i) {
 				if ((absCoords[i][0] < 0) || (absCoords[i][0] > currGrid[0].size() - 1) || 
@@ -342,16 +301,4 @@ void Tetromino::drop() {
 	notifyObservers(); 
 }
 
-
 Tetromino::~Tetromino() {}
-
-
-
-
-
-
-
-
-
-
-

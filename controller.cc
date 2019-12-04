@@ -9,7 +9,7 @@
 #include "tetromino.h"
 #include "info.h"
 #include "textdisplay.h"
-#include "graphicsdisplay.h"
+//#include "graphicsdisplay.h"
 
 using namespace std;
 
@@ -31,14 +31,16 @@ Controller::Controller(int argc, char** argv): argc{argc}, argv{argv} {
 	// command list
         vector<string> commands = {"left", "right", "down", "clockwise", "counterclockwise",
                              "drop", "levelup", "leveldown", "norandom", "random", 
-                             "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart", "force", "blind, "heavy"};
+                             "sequence", "I", "J", "L", "O", "S", "Z", "T", "restart", "force", "blind", "heavy"};
 
 
   	// initialize displays
- 	display = new TextDisplay();
+	
 	if (!textOnly) {
-  		graphics_display = new GraphicsDisplay();
+  //		graphics_display = new GraphicsDisplay();
   	}
+	else
+		display = new TextDisplay();
 
  	// initialize boards
   	b1 = new Board(startLevel, 1, display, seqfile1, seed);

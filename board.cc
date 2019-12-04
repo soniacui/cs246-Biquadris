@@ -29,15 +29,11 @@ Board::Board(int difficulty, int playerID, Observer *display, string path, int s
     attach(display); //attach display as observer to board
     generateTetromino(); //make the starting tetromino
     notifyObservers(); //display starting state
-    //cout << playerID << observers.size() << currTetro->observers.size() << endl;
 }
 
 void Board::drawToGrid(Tetromino *currTetro) {
     shared_ptr<TetrominoInfo>initInfo = currTetro->getTetroInfo();
-    cout << initInfo->absCoords.size() << endl;
-    cout << initInfo->type << endl;
     for (int i = 0; i < initInfo->absCoords.size(); i++) {
-        cout << initInfo->absCoords[i][1] << ", " << initInfo->absCoords[i][0] << endl;
         grid[initInfo->absCoords[i][1]][initInfo->absCoords[i][0]] = initInfo->type;
     }
 }
@@ -45,7 +41,6 @@ void Board::drawToGrid(Tetromino *currTetro) {
 void Board::generateTetromino() {
     if (nextTetro == nullptr) {
         currTetro = tetroFactory.generateTetromino(grid);
-	//cout << "following is tetro's" << endl;
         currTetro->attach(this); //set this board as observer to the tetro
         tetrominoes.emplace_back(currTetro); //save a pointer to all tetrominoes generated in tetrominoes
         attach(currTetro); //add tetromino as an observer
@@ -67,18 +62,22 @@ void Board::generateTetromino() {
 }
 
 bool Board::checkDropped(TetrominoInfo tetroInfo) const {
-	cout << "checkecheckechk" << endl;
     if (tetroInfo.isDropped)
         return true;
     if (tetroInfo.isHeavy || tetroInfo.speed != 0) {
         for (int i = 0; i < tetroInfo.absCoords.size(); i++) {
+		if (tetroInfo.absCoords[i][1] - 1 < 0)
+			return true;
             if (grid[tetroInfo.absCoords[i][1] - 1][tetroInfo.absCoords[i][0]] != ' ') { //check if below each pixel of tetromino is not a free space
-                for (int j = 0; j < tetroInfo.absCoords.size(); i++) {
+		    bool hasLower = false;
+                for (int j = 0; j < tetroInfo.absCoords.size(); j++) {
                     if ((tetroInfo.absCoords[j][0] == tetroInfo.absCoords[i][0]) &&
-                        (tetroInfo.absCoords[j][1] == tetroInfo.absCoords[i][1] - 1))
+                        (tetroInfo.absCoords[j][1] == tetroInfo.absCoords[i][1] - 1)){
+			    hasLower = true;
                         continue; //continue when the not-free space in question is part of itself
+		    }
                 }
-                return true; //since there is no free space under a pixel of the tetromino, and it isn't itself, it has dropped
+                return !hasLower; //since there is no free space under a pixel of the tetromino, and it isn't itself, it has dropped
             }
         }
         return false;
@@ -87,7 +86,6 @@ bool Board::checkDropped(TetrominoInfo tetroInfo) const {
 }
 
 void Board::clearLine() {
-	cout << "NEWWWWWWWWW" << endl;
     int linesCleared = 0;
     for (int i = 0; i < HEIGHT; i++) { //loop through rows
         bool toBeCleared = true;
@@ -96,7 +94,6 @@ void Board::clearLine() {
                 toBeCleared = false; //if there is a space in current line, do not remove line
         }
         if (toBeCleared) { //if current line has no spaces, perform removal
-		cout << "clearing: " << i << endl;
             deletedRow = i;
             for (int y = 0; y < HEIGHT; y++) { //from bottom up
                 if (y == HEIGHT - 1) { //very first row is always fresh
@@ -108,7 +105,6 @@ void Board::clearLine() {
             }
             linesCleared++;
 	    notifyObservers();
-	    cout << "tis prob wonr run" << endl;
 	    deletedRow = -1; //reset
             if (linesCleared != 0 && ((linesCleared % 2) == 0)) { //every 2 lines cleared, choose effect for opponent
                 menu = true; //set menu to true, allow only commands that deal with menu
@@ -127,7 +123,6 @@ void Board::clearLine() {
         sinceLastClear++;
     else {
         score += (difficulty + linesCleared) * (difficulty + linesCleared); //score increased for clearing lines
-	cout << "score added for lines only: " << (difficulty + linesCleared) * (difficulty + linesCleared) << endl;
     }
     if (sinceLastClear == 5) {
         sinceLastClear = 0;
@@ -177,10 +172,8 @@ bool Board::isGameOver(TetrominoInfo newest) {
 }
 
 void Board::performAction(string action, string newPath) { //handles input as a distinct unique string, calls action on current block
-    cout << "IN ACTION SELECTION" << endl;
     if (action == "left" || action == "right" || action == "down") {
         if (!menu)
-		cout << "aaaaaaaaaa" << endl;
             currTetro->move(action);
     }
     else if (action == "clockwise" || action == "counterclockwise") {
@@ -280,14 +273,6 @@ void Board::performAction(string action, string newPath) { //handles input as a 
                 notifyObservers();
         }
     }
-    /*
-    else { //the remaining commands will be to force own block
-        if (!menu) {
-            sufferPunishment(action);
-            notifyObservers();
-        }
-    }
-    */
 }
 
 void Board::deleteTetro(Tetromino *destroy) {
@@ -331,7 +316,6 @@ void Board::sufferPunishment(string effect) {
         drawToGrid(currTetro);
     }
     else if (effect == "L") {
-	    cout << "11111" << endl;
         deleteTetro(currTetro); //removes current tetro off the grid
         remove(tetrominoes.size()); //delete previous current in observers and tetrominoes
         currTetro = tetroFactory.forceGenerate(grid, "L"); //make a specific tetro as current
@@ -429,17 +413,10 @@ void Board::sufferPunishment(string effect) {
 }
 
 void Board::notify(Subject &notifier) {
-	cout << "BOARD HAS BEEN NOTIFIED" << endl;
     shared_ptr<TetrominoInfo>tInfo = notifier.getTetroInfo(); //get relevant information from caller
-    cout << "HMMM" << endl;
     shared_ptr<BoardInfo>bInfo = notifier.getInfo();
-    cout << "bbbbbbbbbb" << endl;
-    cout << tInfo << endl;
-    cout << bInfo << endl;
     if (tInfo != nullptr) { //if caller is a tetromino
-	    cout << "TETRO" << endl;
         if (tInfo->isDeleted) { //case for tetromino has been removed from board
-		cout << "SOMETHING HAS BEEN TOTAL DELETED" << endl;
             score += (tInfo->value + 1) * (tInfo->value + 1); //add points
 	    if (score > Board::highScore) //change static highscore if my score is greater
                 Board::highScore = score;
@@ -448,22 +425,15 @@ void Board::notify(Subject &notifier) {
 	    notifyObservers();
 	    deletedRow = tempDeleted;
 	    return;
-            //if (score > Board::highScore) //change static highscore if my score is greater
-            //    Board::highScore = score;
         }
         else { //handling tetromino representation on internal grid
-		    cout << "dddddddd" << endl;
             //a move done to an existing nondropped tetromino
-		    cout << tInfo->absCoords.size() << endl;
-		    cout << "f.5555555" << endl;
 		    for (int i = 0; i < tInfo->absCoords.size(); i++) {
-			    cout << tInfo->absCoords[i][0]  << ", " << tInfo->absCoords[i][1] << endl;
 		        grid[tInfo->previously[i][1]][tInfo->previously[i][0]] = ' '; //fill old location
             }
             for (int i = 0; i < tInfo->absCoords.size(); i++) {
                 grid[tInfo->absCoords[i][1]][tInfo->absCoords[i][0]] = tInfo->type; //new location
             }
-		    cout << "gggggggggggg" << endl;
             if (checkDropped(*tInfo)) //check if the tetromino has dropped to the bottom
                 clearLine(); //complete end of turn actions, add points clear lines etc.
         }
